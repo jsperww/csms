@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanWarnInfoDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_warn_info
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		提醒内容,提醒时间,提醒状态,提醒类型,提醒内容id,贷款合同号,提醒对象类型,提醒对象,处理状态,处理结果,备注,发送消息标识,创建时间,创建者,修改时间,修改者
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(提醒内容) 提醒内容,提醒时间,提醒状态,提醒类型,提醒内容id,RTRIM(贷款合同号) 贷款合同号,提醒对象类型,RTRIM(提醒对象) 提醒对象,处理状态,RTRIM(处理结果) 处理结果,RTRIM(备注) 备注,RTRIM(发送消息标识) 发送消息标识,创建时间,RTRIM(创建者) 创建者,修改时间,RTRIM(修改者) 修改者
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.提醒内容) 提醒内容,a.提醒时间,a.提醒状态,a.提醒类型,a.提醒内容id,RTRIM(a.贷款合同号) 贷款合同号,a.提醒对象类型,RTRIM(a.提醒对象) 提醒对象,a.处理状态,RTRIM(a.处理结果) 处理结果,RTRIM(a.备注) 备注,RTRIM(a.发送消息标识) 发送消息标识,a.创建时间,RTRIM(a.创建者) 创建者,a.修改时间,RTRIM(a.修改者) 修改者
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanWarnInfo">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="warnContent" column="提醒内容" />
+		<result property="warnDate" column="提醒时间" />
+		<result property="warnStatus" column="提醒状态" />
+		<result property="warnWay" column="提醒类型" />
+		<result property="warnId" column="提醒内容id" />
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="warnTargetType" column="提醒对象类型" />
+		<result property="warnTarget" column="提醒对象" />
+		<result property="handleStatus" column="处理状态" />
+		<result property="result" column="处理结果" />
+		<result property="remark" column="备注" />
+		<result property="sendMsgFlag" column="发送消息标识" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+		<result property="updateOn" column="修改时间" />
+		<result property="updateBy" column="修改者" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{warnContent},#{warnDate},#{warnStatus},#{warnWay},#{warnId},#{loanContractNum},#{warnTargetType},#{warnTarget},#{handleStatus},#{result},#{remark},#{sendMsgFlag},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{warnContent},#{warnDate},#{warnStatus},#{warnWay},#{warnId},#{loanContractNum},#{warnTargetType},#{warnTarget},#{handleStatus},#{result},#{remark},#{sendMsgFlag},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.warnContent},#{item.warnDate},#{item.warnStatus},#{item.warnWay},#{item.warnId},#{item.loanContractNum},#{item.warnTargetType},#{item.warnTarget},#{item.handleStatus},#{item.result},#{item.remark},#{item.sendMsgFlag},#{item.createOn},#{item.createBy},#{item.updateOn},#{item.updateBy})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="warnContent!=null">and 提醒内容 = #{warnContent}</when></choose>
+			<choose><when test="warnDate!=null">and 提醒时间 = #{warnDate}</when></choose>
+			<choose><when test="warnStatus!=null">and 提醒状态 = #{warnStatus}</when></choose>
+			<choose><when test="warnWay!=null">and 提醒类型 = #{warnWay}</when></choose>
+			<choose><when test="warnId!=null">and 提醒内容id = #{warnId}</when></choose>
+			<choose><when test="loanContractNum!=null">and 贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="warnTargetType!=null">and 提醒对象类型 = #{warnTargetType}</when></choose>
+			<choose><when test="warnTarget!=null">and 提醒对象 = #{warnTarget}</when></choose>
+			<choose><when test="handleStatus!=null">and 处理状态 = #{handleStatus}</when></choose>
+			<choose><when test="result!=null">and 处理结果 = #{result}</when></choose>
+			<choose><when test="remark!=null">and 备注 = #{remark}</when></choose>
+			<choose><when test="sendMsgFlag!=null">and 发送消息标识 = #{sendMsgFlag}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and 修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null">and 修改者 = #{updateBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="warnContent!=null">提醒内容 = #{warnContent},</if> 
+		<if test="warnDate!=null">提醒时间 = #{warnDate},</if> 
+		<if test="warnStatus!=null">提醒状态 = #{warnStatus},</if> 
+		<if test="warnWay!=null">提醒类型 = #{warnWay},</if> 
+		<if test="warnId!=null">提醒内容id = #{warnId},</if> 
+		<if test="loanContractNum!=null">贷款合同号 = #{loanContractNum},</if> 
+		<if test="warnTargetType!=null">提醒对象类型 = #{warnTargetType},</if> 
+		<if test="warnTarget!=null">提醒对象 = #{warnTarget},</if> 
+		<if test="handleStatus!=null">处理状态 = #{handleStatus},</if> 
+		<if test="result!=null">处理结果 = #{result},</if> 
+		<if test="remark!=null">备注 = #{remark},</if> 
+		发送消息标识 = #{sendMsgFlag},
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		<if test="updateOn!=null">修改时间 = #{updateOn},</if> 
+		<if test="updateBy!=null">修改者 = #{updateBy},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="warnContent!=null">提醒内容 = NULL,</if>
+		<if test="warnDate!=null">提醒时间 = NULL,</if>
+		<if test="warnStatus!=null">提醒状态 = NULL,</if>
+		<if test="warnWay!=null">提醒类型 = NULL,</if>
+		<if test="warnId!=null">提醒内容id = NULL,</if>
+		<if test="loanContractNum!=null">贷款合同号 = NULL,</if>
+		<if test="warnTargetType!=null">提醒对象类型 = NULL,</if>
+		<if test="warnTarget!=null">提醒对象 = NULL,</if>
+		<if test="handleStatus!=null">处理状态 = NULL,</if>
+		<if test="result!=null">处理结果 = NULL,</if>
+		<if test="remark!=null">备注 = NULL,</if>
+		<if test="sendMsgFlag!=null">发送消息标识 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		<if test="updateOn!=null">修改时间 = NULL,</if>
+		<if test="updateBy!=null">修改者 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="warnContent!=null &amp;&amp; warnContent!=''">and a.提醒内容 = #{warnContent}</when></choose>
+			<choose><when test="warnDate!=null">and a.提醒时间 = #{warnDate}</when></choose>
+			<choose><when test="warnStatus!=null">and a.提醒状态 = #{warnStatus}</when></choose>
+			<choose><when test="warnWay!=null">and a.提醒类型 = #{warnWay}</when></choose>
+			<choose><when test="warnId!=null">and a.提醒内容id = #{warnId}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="warnTargetType!=null">and a.提醒对象类型 = #{warnTargetType}</when></choose>
+			<choose><when test="warnTarget!=null &amp;&amp; warnTarget!=''">and a.提醒对象 = #{warnTarget}</when></choose>
+			<choose><when test="handleStatus!=null">and a.处理状态 = #{handleStatus}</when></choose>
+			<choose><when test="result!=null &amp;&amp; result!=''">and a.处理结果 = #{result}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="sendMsgFlag!=null &amp;&amp; sendMsgFlag!=''">and a.发送消息标识 = #{sendMsgFlag}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey,b.名称 name
+		from
+		<include refid="tableName" /> a
+		 left join k_loan_info b on a.贷款合同号 = b.贷款合同号
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="warnContent!=null &amp;&amp; warnContent!=''">and a.提醒内容 = #{warnContent}</when></choose>
+			<choose><when test="warnDate!=null">and a.提醒时间 = #{warnDate}</when></choose>
+			<choose><when test="warnStatus!=null">and a.提醒状态 = #{warnStatus}</when></choose>
+			<choose><when test="warnWay!=null">and a.提醒类型 = #{warnWay}</when></choose>
+			<choose><when test="warnId!=null">and a.提醒内容id = #{warnId}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="warnTargetType!=null">and a.提醒对象类型 = #{warnTargetType}</when></choose>
+			<choose><when test="warnTarget!=null &amp;&amp; warnTarget!=''">and a.提醒对象 = #{warnTarget}</when></choose>
+			<choose><when test="handleStatus!=null">and a.处理状态 = #{handleStatus}</when></choose>
+			<choose><when test="result!=null &amp;&amp; result!=''">and a.处理结果 = #{result}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="sendMsgFlag!=null &amp;&amp; sendMsgFlag!=''">and a.发送消息标识 = #{sendMsgFlag}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+
+
+	<select id="findUnSendMsg" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey,b.名称 name
+		from
+		<include refid="tableName" /> a
+		left join k_loan_info b on a.贷款合同号 = b.贷款合同号
+
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="warnContent!=null &amp;&amp; warnContent!=''">and a.提醒内容 = #{warnContent}</when></choose>
+			<choose><when test="warnDate!=null">and a.提醒时间 = #{warnDate}</when></choose>
+			<choose><when test="warnStatus!=null">and a.提醒状态 = #{warnStatus}</when></choose>
+			<choose><when test="warnWay!=null">and a.提醒类型 = #{warnWay}</when></choose>
+			<choose><when test="warnId!=null">and a.提醒内容id = #{warnId}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="warnTargetType!=null">and a.提醒对象类型 = #{warnTargetType}</when></choose>
+			<choose><when test="warnTarget!=null &amp;&amp; warnTarget!=''">and a.提醒对象 = #{warnTarget}</when></choose>
+			<choose><when test="handleStatus!=null">and a.处理状态 = #{handleStatus}</when></choose>
+			<choose><when test="result!=null &amp;&amp; result!=''">and a.处理结果 = #{result}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			and a.发送消息标识 is null
+		</where>
+	</select>
+
+
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="warnContent!=null &amp;&amp; warnContent!=''">and a.提醒内容 like '%${warnContent}%'</when></choose>
+			<choose><when test="warnDate!=null">and a.提醒时间 = #{warnDate}</when></choose>
+			<choose><when test="warnStatus!=null">and a.提醒状态 = #{warnStatus}</when></choose>
+			<choose><when test="warnWay!=null">and a.提醒类型 = #{warnWay}</when></choose>
+			<choose><when test="warnId!=null">and a.提醒内容id = #{warnId}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 like '%${loanContractNum}%'</when></choose>
+			<choose><when test="warnTargetType!=null">and a.提醒对象类型 = #{warnTargetType}</when></choose>
+			<choose><when test="warnTarget!=null &amp;&amp; warnTarget!=''">and a.提醒对象 like '%${warnTarget}%'</when></choose>
+			<choose><when test="handleStatus!=null">and a.处理状态 = #{handleStatus}</when></choose>
+			<choose><when test="result!=null &amp;&amp; result!=''">and a.处理结果 like '%${result}%'</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 like '%${remark}%'</when></choose>
+			<choose><when test="sendMsgFlag!=null &amp;&amp; sendMsgFlag!=''">and a.发送消息标识 like '%${sendMsgFlag}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 like '%${updateBy}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		<if test="flag == 1">and datediff(day,提醒时间,getdate())=0</if>
+		<if test="flag == 2">and datediff(week,提醒时间,getdate())=0</if>
+		<if test="flag == 3">and datediff(month,提醒时间,getdate())=0</if>
+		<if test="flag == 4">and 提醒时间 &lt; CONVERT(date,GETDATE())</if>
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey,name,warnWayName
+		from (
+		select row_number() over (order by a.提醒时间 desc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey,wt.项目 warnWayName,b.名称 name
+		from
+		<include refid="tableName" /> a
+		 left join k_loan_info b on a.贷款合同号 = b.贷款合同号
+		left join d_warntype wt on a.提醒类型 = wt.代码
+		<include refid="pagingWhere" />
+		<if test="flag == 1">and datediff(day,提醒时间,getdate())=0</if>
+		<if test="flag == 2">and datediff(week,提醒时间,getdate())=0</if>
+		<if test="flag == 3">and datediff(month,提醒时间,getdate())=0</if>
+		<if test="flag == 4">and 提醒时间 &lt; CONVERT(date,GETDATE())</if>
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

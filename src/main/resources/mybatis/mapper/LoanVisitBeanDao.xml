@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanVisitBeanDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_loan_visit
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		贷款合同号,回访对象类型,回访对象,回访类型,回访结果,回访时间,回访地点,回访坐标,创建时间,创建者,修改时间,修改者,催收函标识,催收函对象类型,催收函对象,提醒标识,提醒日期,提醒内容
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(贷款合同号) 贷款合同号,RTRIM(回访对象类型) 回访对象类型,RTRIM(回访对象) 回访对象,回访类型,RTRIM(回访结果) 回访结果,回访时间,RTRIM(回访地点) 回访地点,RTRIM(回访坐标) 回访坐标,创建时间,RTRIM(创建者) 创建者,修改时间,RTRIM(修改者) 修改者,催收函标识,RTRIM(催收函对象类型)催收函对象类型,RTRIM(催收函对象)催收函对象,提醒标识,提醒日期,提醒内容
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.贷款合同号) 贷款合同号,RTRIM(a.回访对象类型) 回访对象类型,RTRIM(a.回访对象) 回访对象,a.回访类型,RTRIM(a.回访结果) 回访结果,a.回访时间,RTRIM(a.回访地点) 回访地点,RTRIM(a.回访坐标) 回访坐标,a.创建时间,RTRIM(a.创建者) 创建者,a.修改时间,RTRIM(a.修改者) 修改者,催收函标识,RTRIM(a.催收函对象类型)催收函对象类型,RTRIM(a.催收函对象)催收函对象,a.提醒标识,a.提醒日期,a.提醒内容
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanVisitBean">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="visitPersonType" column="回访对象类型" />
+		<result property="visitPerson" column="回访对象" />
+		<result property="visitType" column="回访类型" />
+		<result property="visitResult" column="回访结果" />
+		<result property="visitDate" column="回访时间" />
+		<result property="visitPlace" column="回访地点" />
+		<result property="visitCoordinate" column="回访坐标" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+		<result property="updateOn" column="修改时间" />
+		<result property="updateBy" column="修改者" />
+		<result property="peyMentFlag" column="催收函标识" />
+		<result property="peyMentPersonType" column="催收函对象类型" />
+		<result property="peyMentPerson" column="催收函对象" />
+		<result property="warnFalg" column="提醒标识" />
+		<result property="warnDate" column="提醒日期" />
+		<result property="warnContent" column="提醒内容" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{visitPersonType},#{visitPerson},#{visitType},#{visitResult},#{visitDate},#{visitPlace},#{visitCoordinate},#{createOn},#{createBy},#{updateOn},#{updateBy},#{peyMentFlag},#{peyMentPersonType},#{peyMentPerson},#{warnFalg},#{warnDate},#{warnContent})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{visitPersonType},#{visitPerson},#{visitType},#{visitResult},#{visitDate},#{visitPlace},#{visitCoordinate},#{createOn},#{createBy},#{updateOn},#{updateBy},#{peyMentFlag},#{peyMentPersonType},#{peyMentPerson},#{warnFalg},#{warnDate},#{warnContent})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.loanContractNum},#{item.visitPersonType},#{item.visitPerson},#{item.visitType},#{item.visitResult},#{item.visitDate},#{item.visitPlace},#{item.visitCoordinate},#{item.createOn},#{item.createBy},#{item.updateOn},#{item.updateBy},#{item.#{peyMentFlag}},#{item.peyMentPersonType},#{item.peyMentPerson},
+			#{item.warnFalg},#{item.warnDate},#{item.warnContent})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete from
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null">and 贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="visitType!=null">and 回访类型 = #{visitType}</when></choose>
+			<choose><when test="visitResult!=null">and 回访结果 = #{visitResult}</when></choose>
+			<choose><when test="visitDate!=null">and 回访时间 = #{visitDate}</when></choose>
+			<choose><when test="visitPlace!=null">and 回访地点 = #{visitPlace}</when></choose>
+			<choose><when test="visitCoordinate!=null">and 回访坐标 = #{visitCoordinate}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and 修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null">and 修改者 = #{updateBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete from
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete from
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = #{loanContractNum},</if>
+		<if test="visitPersonType!=null">回访对象类型 = #{visitPersonType},</if>
+		<if test="visitPerson!=null">回访对象 = #{visitPerson},</if>
+		<if test="visitType!=null">回访类型 = #{visitType},</if> 
+		<if test="visitResult!=null">回访结果 = #{visitResult},</if> 
+		<if test="visitDate!=null">回访时间 = #{visitDate},</if> 
+		<if test="visitPlace!=null">回访地点 = #{visitPlace},</if> 
+		<if test="visitCoordinate!=null">回访坐标 = #{visitCoordinate},</if> 
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		<if test="updateOn!=null">修改时间 = #{updateOn},</if> 
+		<if test="updateBy!=null">修改者 = #{updateBy},</if>
+		<if test="peyMentFlag!=null">催收函标识 = #{peyMentFlag},</if>
+		<if test="peyMentPersonType!=null">催收函对象类型 = #{peyMentPersonType},</if>
+		<if test="peyMentPerson!=null">催收函对象 = #{peyMentPerson},</if>
+		<if test="warnFalg!=null">提醒标识 = #{warnFalg},</if>
+		<if test="warnDate!=null">提醒日期 = #{warnDate},</if>
+		<if test="warnContent!=null">提醒内容 = #{warnContent},</if>
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = NULL,</if>
+		<if test="visitPersonType!=null">回访对象类型 = NULL,</if>
+		<if test="visitPerson!=null">回访对象 = NULL,</if>
+		<if test="visitType!=null">回访类型 = NULL,</if>
+		<if test="visitResult!=null">回访结果 = NULL,</if>
+		<if test="visitDate!=null">回访时间 = NULL,</if>
+		<if test="visitPlace!=null">回访地点 = NULL,</if>
+		<if test="visitCoordinate!=null">回访坐标 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		<if test="updateOn!=null">修改时间 = NULL,</if>
+		<if test="updateBy!=null">修改者 = NULL,</if>
+		<if test="peyMentFlag!=null">催收函标识 = NULL,</if>
+		<if test="peyMentPersonType!=null">催收函对象类型 = NULL,</if>
+		<if test="peyMentPerson!=null">催收函对象 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="visitPersonType!=null &amp;&amp; visitPersonType!=''">and a.回访对象类型 = #{visitPersonType}</when></choose>
+			<choose><when test="visitPerson!=null &amp;&amp; visitPerson!=''">and a.回访对象 = #{visitPerson}</when></choose>
+			<choose><when test="visitType!=null">and a.回访类型 = #{visitType}</when></choose>
+			<choose><when test="visitResult!=null &amp;&amp; visitResult!=''">and a.回访结果 = #{visitResult}</when></choose>
+			<choose><when test="visitDate!=null">and a.回访时间 = #{visitDate}</when></choose>
+			<choose><when test="visitPlace!=null &amp;&amp; visitPlace!=''">and a.回访地点 = #{visitPlace}</when></choose>
+			<choose><when test="visitCoordinate!=null &amp;&amp; visitCoordinate!=''">and a.回访坐标 = #{visitCoordinate}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			<choose><when test="peyMentFlag!=null &amp;&amp; peyMentFlag!=''">and a.催收函标识 = #{peyMentFlag}</when></choose>
+			<choose><when test="peyMentPersonType!=null &amp;&amp; peyMentPersonType!=''">and a.催收函对象类型 = #{peyMentPersonType}</when></choose>
+			<choose><when test="peyMentPerson!=null &amp;&amp; peyMentPerson!=''">and a.催收函对象 = #{peyMentPerson}</when></choose>
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="visitPersonType!=null &amp;&amp; visitPersonType!=''">and a.回访对象类型 = #{visitPersonType}</when></choose>
+			<choose><when test="visitPerson!=null &amp;&amp; visitPerson!=''">and a.回访对象 = #{visitPerson}</when></choose>
+			<choose><when test="visitType!=null">and a.回访类型 = #{visitType}</when></choose>
+			<choose><when test="visitResult!=null &amp;&amp; visitResult!=''">and a.回访结果 = #{visitResult}</when></choose>
+			<choose><when test="visitDate!=null">and a.回访时间 = #{visitDate}</when></choose>
+			<choose><when test="visitPlace!=null &amp;&amp; visitPlace!=''">and a.回访地点 = #{visitPlace}</when></choose>
+			<choose><when test="visitCoordinate!=null &amp;&amp; visitCoordinate!=''">and a.回访坐标 = #{visitCoordinate}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			<choose><when test="peyMentFlag!=null &amp;&amp; peyMentFlag!=''">and a.催收函标识 = #{peyMentFlag}</when></choose>
+			<choose><when test="peyMentPersonType!=null &amp;&amp; peyMentPersonType!=''">and a.催收函对象类型 = #{peyMentPersonType}</when></choose>
+			<choose><when test="peyMentPerson!=null &amp;&amp; peyMentPerson!=''">and a.催收函对象 = #{peyMentPerson}</when></choose>
+			<choose><when test="warnFalg!=null &amp;&amp; warnFalg!=''">and a.提醒标识 = #{warnFalg}</when></choose>
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 like '%${loanContractNum}%'</when></choose>
+			<choose><when test="visitPersonType!=null &amp;&amp; visitPersonType!=''">and a.回访对象类型 = #{visitPersonType}</when></choose>
+			<choose><when test="visitPerson!=null &amp;&amp; visitPerson!=''">and a.回访对象 = #{visitPerson}</when></choose>
+			<choose><when test="visitType!=null">and a.回访类型 = #{visitType}</when></choose>
+			<choose><when test="visitResult!=null &amp;&amp; visitResult!=''">and a.回访结果 like '%${visitResult}%'</when></choose>
+			<choose><when test="visitDate!=null">and a.回访时间 = #{visitDate}</when></choose>
+			<choose><when test="visitPlace!=null &amp;&amp; visitPlace!=''">and a.回访地点 like '%${visitPlace}%'</when></choose>
+			<choose><when test="visitCoordinate!=null &amp;&amp; visitCoordinate!=''">and a.回访坐标 like '%${visitCoordinate}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 like '%${updateBy}%'</when></choose>
+			<choose><when test="peyMentFlag!=null &amp;&amp; peyMentFlag!=''">and a.催收函标识 = #{peyMentFlag}</when></choose>
+			<choose><when test="peyMentPersonType!=null &amp;&amp; peyMentPersonType!=''">and a.催收函对象类型 = #{peyMentPersonType}</when></choose>
+			<choose><when test="peyMentPerson!=null &amp;&amp; peyMentPerson!=''">and a.催收函对象 = #{peyMentPerson}</when></choose>
+			<choose><when test="warnFalg!=null &amp;&amp; warnFalg!=''">and a.提醒标识 = #{warnFalg}</when></choose>
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey,visitTypeName,remark
+		from (
+		select row_number() over (order by a.回访时间 desc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey,RTRIM(b.项目)visitTypeName,RTRIM(c.描述) remark
+		from
+		<include refid="tableName" /> a
+		left join d_loanvisittype b on a.回访类型 = b.代码
+		left join hbcm.._USER c on a.创建者 = c.名称
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findMyVisitPagingCount" resultType="Integer">
+		select count(*) _row
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		a.名称 name,a.首贷金额 earliestLoanAmount,a.结欠本金 leftCapitalAmount,a.结欠利息 leftInterestAmount,a.借款日期
+		loanBeginDate,a.到期日期 loanEndDate,a.证件号码 idNum,e.项目 idTypeName
+		from
+		(select * from (select ROW_NUMBER() over(partition BY 贷款合同号 order by 创建时间 desc) n ,* from k_loan_visit ) t where t.n = 1 ) i
+		left join k_loan_info a on a.贷款合同号 = i.贷款合同号
+		left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+		left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+		left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+		left join d_idType e on a.证件类型 = e.代码
+		left join d_area g on a.村 = g.代码
+		<where>
+			(c.名称 = #{userId} or d.单位代码= #{deptId} or i.创建者 = #{createBy})
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 = #{idNum}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.联系电话 = #{mobile}</when></choose>
+			<choose><when test="loanAccountNum!=null &amp;&amp; loanAccountNum!=''">and a.贷款账号 = #{loanAccountNum}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanWay!=null">and a.贷款方式 = #{loanWay}</when></choose>
+			<choose><when test="loanStatus!=null &amp;&amp; loanStatus!=''">and a.贷款状态 = #{loanStatus}</when></choose>
+		</where>
+		) a
+	</select>
+
+	<select id="findMyVisitPagingData" resultType="com.hbsoft.csms.vo.LoanInfoVo">
+		select name,earliestLoanAmount,leftCapitalAmount,leftInterestAmount,loanBeginDate,loanEndDate,idNum,idTypeName,loanContractNum,remark
+		from (
+		select row_number() over (order by a.id_prikey desc) RN,
+		a.名称 name,Convert(decimal(18,2),a.首贷金额) earliestLoanAmount,Convert(decimal(18,2),a.结欠本金) leftCapitalAmount,Convert(decimal(18,2),a.结欠利息) leftInterestAmount,a.借款日期 loanBeginDate,a.到期日期 loanEndDate,a.证件号码 idNum,e.项目 idTypeName,a.贷款合同号 loanContractNum,i.回访结果 remark
+		from
+		(select * from (select ROW_NUMBER() over(partition BY 贷款合同号 order by 创建时间 desc) n ,* from k_loan_visit ) t where t.n = 1 ) i
+		left join k_loan_info a on a.贷款合同号 = i.贷款合同号
+		left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+		left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+		left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+		left join d_idType e on a.证件类型 = e.代码
+		left join d_area g on a.村 = g.代码
+		<where>
+			(c.名称 = #{userId} or d.单位代码= #{deptId} or i.创建者 = #{createBy})
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 = #{idNum}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.联系电话 = #{mobile}</when></choose>
+			<choose><when test="loanAccountNum!=null &amp;&amp; loanAccountNum!=''">and a.贷款账号 = #{loanAccountNum}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanWay!=null">and a.贷款方式 = #{loanWay}</when></choose>
+			<choose><when test="loanStatus!=null &amp;&amp; loanStatus!=''">and a.贷款状态 = #{loanStatus}</when></choose>
+		</where>
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+
+	</select>
+
+
+
+	<select id="findMyUnVisitPagingCount" resultType="Integer">
+		select count(*) _row
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		a.名称 name,a.首贷金额 earliestLoanAmount,a.结欠本金 leftCapitalAmount,a.结欠利息 leftInterestAmount,a.借款日期
+		loanBeginDate,a.到期日期 loanEndDate,a.证件号码 idNum,e.项目 idTypeName
+		from k_loan_info a
+		left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+		left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+		left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+		left join d_idType e on a.证件类型 = e.代码
+		left join d_area g on a.村 = g.代码
+		<where>
+			and a.贷款合同号 not in (
+				select a.贷款合同号
+				from
+				(select * from (select ROW_NUMBER() over(partition BY 贷款合同号 order by 创建时间 desc) n ,* from k_loan_visit ) t where t.n = 1) a
+				left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+				left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+				left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+				where (c.名称 = #{userId} or d.单位代码= #{deptId} or a.创建者 = #{createBy})
+			)
+			and (c.名称 = #{userId} or d.单位代码= #{deptId})
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 = #{idNum}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.联系电话 = #{mobile}</when></choose>
+			<choose><when test="loanAccountNum!=null &amp;&amp; loanAccountNum!=''">and a.贷款账号 = #{loanAccountNum}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanWay!=null">and a.贷款方式 = #{loanWay}</when></choose>
+			<choose><when test="loanStatus!=null &amp;&amp; loanStatus!=''">and a.贷款状态 = #{loanStatus}</when></choose>
+		</where>
+		) a
+	</select>
+
+	<select id="findMyUnVisitPagingData" resultType="com.hbsoft.csms.vo.LoanInfoVo">
+		select name,earliestLoanAmount,leftCapitalAmount,leftInterestAmount,loanBeginDate,loanEndDate,idNum,idTypeName,loanContractNum
+		from (
+		select row_number() over (order by a.id_prikey desc) RN,
+		a.名称 name,Convert(decimal(18,2),a.首贷金额) earliestLoanAmount,Convert(decimal(18,2),a.结欠本金) leftCapitalAmount,Convert(decimal(18,2),a.结欠利息) leftInterestAmount,a.借款日期 loanBeginDate,a.到期日期 loanEndDate,a.证件号码 idNum,e.项目 idTypeName,a.贷款合同号 loanContractNum
+		from k_loan_info a
+		left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+		left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+		left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+		left join d_idType e on a.证件类型 = e.代码
+		left join d_area g on a.村 = g.代码
+		<where>
+			and a.贷款合同号 not in (
+				select a.贷款合同号
+				from
+				(select * from (select ROW_NUMBER() over(partition BY 贷款合同号 order by 创建时间 desc) n ,* from k_loan_visit ) t where t.n = 1) a
+				left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+				left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+				left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+				where (c.名称 = #{userId} or d.单位代码= #{deptId} or a.创建者 = #{createBy})
+			)
+			and (c.名称 = #{userId} or d.单位代码= #{deptId})
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 = #{idNum}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.联系电话 = #{mobile}</when></choose>
+			<choose><when test="loanAccountNum!=null &amp;&amp; loanAccountNum!=''">and a.贷款账号 = #{loanAccountNum}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanWay!=null">and a.贷款方式 = #{loanWay}</when></choose>
+			<choose><when test="loanStatus!=null &amp;&amp; loanStatus!=''">and a.贷款状态 = #{loanStatus}</when></choose>
+		</where>
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+
+	</select>
+
+
+
+
+
+	
+</mapper>

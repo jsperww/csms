@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.CommonDao">
+	
+	<select id="getMaxCode" resultType="String">
+		SELECT MAX(代码) FROM k_process;
+	</select>
+	
+	<select id="getMaxCode2" resultType="Integer">
+	SELECT MAX(节点id) FROM k_process_detail where 节点类型=#{nodeType};
+	</select>
+	
+	<select id="getAreaCodeByDistributeArea" resultType="String">
+		select RTRIM(区域编号) from k_loan_distribute_org_villvge where 组织号 = #{organizationNum}
+	</select>
+	
+	
+	<select id="getBankCodeByDistributeBank" resultType="String">
+		select RTRIM(银行编号) from k_loan_distribute_org_bank where 组织号 = #{organizationNum}
+	</select>
+
+
+	<select id="getHbDeptIdByLoanInfoId" resultType="String">
+		  select c.单位代码 from k_loan_info a
+		  left join d_org b on a.所属机构 = b.代码
+		  left join hbcm.._DEPT c on rtrim(b.项目) = rtrim(c.单位名称)
+		  where a.id_prikey = #{id_prikey}
+	</select>
+
+
+</mapper>

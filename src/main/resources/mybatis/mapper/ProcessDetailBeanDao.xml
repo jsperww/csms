@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.ProcessDetailBeanDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_process_detail
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		节点,节点名称,节点类型,下一节点,上一节点,创建时间,创建者,修改时间,修改者,
+		下一节点条件,上一节点条件,节点前置条件,节点处理方法
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(节点) 节点,RTRIM(节点名称) 节点名称,RTRIM(节点类型) 节点类型,RTRIM(下一节点) 下一节点,RTRIM(上一节点) 上一节点,创建时间,RTRIM(创建者) 创建者,修改时间,RTRIM(修改者) 修改者,
+		RTRIM(下一节点条件) 下一节点条件,RTRIM(上一节点条件) 上一节点条件,RTRIM(节点前置条件) 节点前置条件,RTRIM(节点处理方法) 节点处理方法
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.节点) 节点,RTRIM(a.节点名称) 节点名称,RTRIM(a.节点类型) 节点类型,RTRIM(a.下一节点) 下一节点,RTRIM(a.上一节点) 上一节点,a.创建时间,RTRIM(a.创建者) 创建者,a.修改时间,RTRIM(a.修改者) 修改者,
+		RTRIM(a.下一节点条件) 下一节点条件,RTRIM(a.上一节点条件) 上一节点条件,RTRIM(a.节点前置条件) 节点前置条件,RTRIM(a.节点处理方法) 节点处理方法
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.ProcessDetailBean">
+		<id property="id_prikey" column="ID_PRIKEY"/>
+		<result property="nodeId" column="节点" />
+		<result property="nodeName" column="节点名称" />
+		<result property="nodeType" column="节点类型" />
+		<result property="nexstNode" column="下一节点" />
+		<result property="lastNode" column="上一节点" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+		<result property="updateOn" column="修改时间" />
+		<result property="updateBy" column="修改者" />
+		<result property="nexstNodeCondition" column="下一节点条件" />
+		<result property="lastNodeCondition" column="上一节点条件" />
+		<result property="precondition" column="节点前置条件" />
+		<result property="disposeMethod" column="节点处理方法" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{nodeId},#{nodeName},#{nodeType},#{nexstNode},#{lastNode},#{createOn},#{createBy},#{updateOn},#{updateBy},
+		#{nexstNodeCondition},#{lastNodeCondition},#{precondition},#{disposeMethod})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{nodeId},#{nodeName},#{nodeType},#{nexstNode},#{lastNode},#{createOn},#{createBy},#{updateOn},#{updateBy},
+		#{nexstNodeCondition},#{lastNodeCondition},#{precondition},#{disposeMethod})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.nodeId},#{item.nodeName},#{item.nodeType},#{item.nexstNode},#{item.lastNode},#{item.createOn},#{item.createBy},#{item.updateOn},#{item.updateBy},
+			#{item.nexstNodeCondition},#{item.lastNodeCondition},#{item.precondition},#{item.disposeMethod})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null">and 节点 = #{nodeId}</when></choose>
+			<choose><when test="nodeName!=null">and 节点名称 = #{nodeName}</when></choose>
+			<choose><when test="nodeType!=null">and 节点类型 = #{nodeType}</when></choose>
+			<choose><when test="nexstNode!=null">and 下一节点 = #{nexstNode}</when></choose>
+			<choose><when test="lastNode!=null">and 上一节点 = #{lastNode}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and 修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null">and 修改者 = #{updateBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where ID_PRIKEY = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where ID_PRIKEY in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="nodeId!=null">节点 = #{nodeId},</if> 
+		<if test="nodeName!=null">节点名称 = #{nodeName},</if> 
+		<if test="nodeType!=null">节点类型 = #{nodeType},</if> 
+		<if test="nexstNode!=null">下一节点 = #{nexstNode},</if> 
+		<if test="lastNode!=null">上一节点 = #{lastNode},</if> 
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		<if test="updateOn!=null">修改时间 = #{updateOn},</if> 
+		<if test="updateBy!=null">修改者 = #{updateBy},</if>
+		<if test="nexstNodeCondition!=null">下一节点条件 = #{nexstNodeCondition},</if>
+		<if test="lastNodeCondition!=null">上一节点条件 = #{lastNodeCondition},</if>
+		<if test="precondition!=null">节点前置条件 = #{precondition},</if>
+		<if test="disposeMethod!=null">节点处理方法 = #{disposeMethod},</if>
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and ID_PRIKEY = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="nodeId!=null">节点 = NULL,</if>
+		<if test="nodeName!=null">节点名称 = NULL,</if>
+		<if test="nodeType!=null">节点类型 = NULL,</if>
+		<if test="nexstNode!=null">下一节点 = NULL,</if>
+		<if test="lastNode!=null">上一节点 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		<if test="updateOn!=null">修改时间 = NULL,</if>
+		<if test="updateBy!=null">修改者 = NULL,</if>
+		</trim>
+		<where>
+			ID_PRIKEY = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		where a.ID_PRIKEY = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null">and a.节点 = #{nodeId}</when></choose>
+			<choose><when test="nodeName!=null &amp;&amp; nodeName!=''">and a.节点名称 = #{nodeName}</when></choose>
+			<choose><when test="nodeType!=null &amp;&amp; nodeType!=''">and a.节点类型 = #{nodeType}</when></choose>
+			<choose><when test="nexstNode!=null &amp;&amp; nexstNode!=''">and a.下一节点 = #{nexstNode}</when></choose>
+			<choose><when test="lastNode!=null &amp;&amp; lastNode!=''">and a.上一节点 = #{lastNode}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			<choose><when test="nexstNodeCondition!=null &amp;&amp; nexstNodeCondition!=''">and a.下一节点条件 = #{nexstNodeCondition}</when></choose>
+			<choose><when test="lastNodeCondition!=null &amp;&amp; lastNodeCondition!=''">and a.上一节点条件 = #{lastNodeCondition}</when></choose>
+			<choose><when test="precondition!=null &amp;&amp; precondition!=''">and a.节点前置条件 = #{precondition}</when></choose>
+			<choose><when test="disposeMethod!=null &amp;&amp; disposeMethod!=''">and a.节点处理方法 = #{disposeMethod}</when></choose>
+
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null &amp;&amp; nodeId!=''">and a.节点 = #{nodeId}</when></choose>
+			<choose><when test="nodeName!=null &amp;&amp; nodeName!=''">and a.节点名称 = #{nodeName}</when></choose>
+			<choose><when test="nodeType!=null &amp;&amp; nodeType!=''">and a.节点类型 = #{nodeType}</when></choose>
+			<choose><when test="nexstNode!=null &amp;&amp; nexstNode!=''">and a.下一节点 = #{nexstNode}</when></choose>
+			<choose><when test="lastNode!=null &amp;&amp; lastNode!=''">and a.上一节点 = #{lastNode}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			<choose><when test="nexstNodeCondition!=null &amp;&amp; nexstNodeCondition!=''">and a.下一节点条件 = #{nexstNodeCondition}</when></choose>
+			<choose><when test="lastNodeCondition!=null &amp;&amp; lastNodeCondition!=''">and a.上一节点条件 = #{lastNodeCondition}</when></choose>
+			<choose><when test="precondition!=null &amp;&amp; precondition!=''">and a.节点前置条件 = #{precondition}</when></choose>
+			<choose><when test="disposeMethod!=null &amp;&amp; disposeMethod!=''">and a.节点处理方法 = #{disposeMethod}</when></choose>
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null &amp;&amp; nodeId!=''">and a.节点 like '%${nodeId}%'</when></choose>
+			<choose><when test="nodeName!=null &amp;&amp; nodeName!=''">and a.节点名称 like '%${nodeName}%'</when></choose>
+			<choose><when test="nodeType!=null &amp;&amp; nodeType!=''">and a.节点类型 like '%${nodeType}%'</when></choose>
+			<choose><when test="nexstNode!=null &amp;&amp; nexstNode!=''">and a.下一节点 like '%${nexstNode}%'</when></choose>
+			<choose><when test="lastNode!=null &amp;&amp; lastNode!=''">and a.上一节点 like '%${lastNode}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 like '%${updateBy}%'</when></choose>
+			<choose><when test="nexstNodeCondition!=null &amp;&amp; nexstNodeCondition!=''">and a.下一节点条件 = #{nexstNodeCondition}</when></choose>
+			<choose><when test="lastNodeCondition!=null &amp;&amp; lastNodeCondition!=''">and a.上一节点条件 = #{lastNodeCondition}</when></choose>
+			<choose><when test="precondition!=null &amp;&amp; precondition!=''">and a.节点前置条件 = #{precondition}</when></choose>
+			<choose><when test="disposeMethod!=null &amp;&amp; disposeMethod!=''">and a.节点处理方法 = #{disposeMethod}</when></choose>
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,ID_PRIKEY
+		from (
+		select row_number() over (order by a.ID_PRIKEY asc) RN,
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findMinNodeIdByNodeType" resultMap="resultMap">
+		select top 1
+		<include refid="fieldAll" />,ID_PRIKEY
+		from k_process_detail
+		where 节点类型 = #{nodeType} order by 节点
+	</select>
+
+	<select id="findMaxNodeIdByNodeType" resultMap="resultMap">
+		select top 1
+		<include refid="fieldAll" />,ID_PRIKEY
+		from k_process_detail
+		where 节点类型 = #{nodeType} order by 节点 desc
+	</select>
+
+	<select id="findMaxNodeAndMinNodeByNodeType" resultType="map">
+		select max(节点) maxNode,min(节点) minNode from k_process_detail where 节点类型 = #{nodeType}
+	</select>
+</mapper>

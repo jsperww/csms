@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.RepayStatisticsDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_loan_repay
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		贷款合同号,还款金额,还款本金,还款利息,结欠本金,结欠利息,审核状态,初审人员,初审时间,复审人员,复审时间
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(贷款合同号) 贷款合同号,还款金额,还款本金,还款利息,结欠本金,结欠利息,审核状态,RTRIM(初审人员) 初审人员,初审时间,RTRIM(复审人员) 复审人员,复审时间
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.贷款合同号) 贷款合同号,a.还款金额,a.还款本金,a.还款利息,a.结欠本金,a.结欠利息,a.审核状态,RTRIM(a.初审人员) 初审人员,a.初审时间,RTRIM(a.复审人员) 复审人员,a.复审时间
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanRepayBean">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="repayAmount" column="还款金额" />
+		<result property="repayCapitalAmount" column="还款本金" />
+		<result property="repayInterestAmount" column="还款利息" />
+		<result property="leftCapitalAmount" column="结欠本金" />
+		<result property="leftInterestAmount" column="结欠利息" />
+		<result property="status" column="审核状态" />
+		<result property="checkFirst" column="初审人员" />
+		<result property="checkFirstDate" column="初审时间" />
+		<result property="checkSecond" column="复审人员" />
+		<result property="checkSecondDate" column="复审时间" />
+	</resultMap>
+	
+	<select id="getRepayPeople" resultType="String">
+  		select COUNT(*) people from k_loan_repay a
+ 		<where>
+			<if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.复审时间 >= #{beginDate} </if>
+			<if test="endDate !=null &amp;&amp; endDate != '' ">and a.复审时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+		</where>
+  	</select>
+  	
+  	<select id="getRepayPeopleNum" resultType="String">
+  		select COUNT(*)peopleNum from (
+		  select a.贷款合同号 from k_loan_repay a
+		 <where>
+			 <if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.复审时间 >= #{beginDate} </if>
+			 <if test="endDate !=null &amp;&amp; endDate != '' ">and a.复审时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+		  </where>
+		  group by a.贷款合同号
+		  )a
+ 		
+  	</select>
+	
+	<select id="getRepayMoneySum" resultType="String">
+		select isnull(SUM(a.还款金额),0) money from k_loan_repay a
+  		<where>
+			<if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.复审时间 >= #{beginDate} </if>
+			<if test="endDate !=null &amp;&amp; endDate != '' ">and a.复审时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+		  </where>
+	</select>
+	
+	<select id="getRepayNetpointCount" resultType="Integer">
+		select COUNT(*)_row from (
+			select
+			a.还款机构 deptCode ,g.项目 deptName,sum(a.还款金额)  money ,count(0) peopleNum
+			from k_loan_repay a
+			left join d_org g on a.还款机构 = g.代码
+			<where>
+				<if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.复审时间 >= #{beginDate} </if>
+				<if test="endDate !=null &amp;&amp; endDate != '' ">and a.复审时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+			</where>
+			group by a.还款机构,g.项目
+		)c
+	</select>
+	
+	<select id="getRepayNetpointNum" resultType="Map">
+		select * from(
+		select row_number() over (order by money desc) RN,* from (
+		select
+		a.还款机构 deptCode ,g.项目 deptName,sum(a.还款金额)  money ,count(0) peopleNum
+		from k_loan_repay a
+		left join d_org g on a.还款机构 = g.代码
+		<where>
+			<if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.复审时间 >= #{beginDate} </if>
+			<if test="endDate !=null &amp;&amp; endDate != '' ">and a.复审时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+		</where>
+		group by a.还款机构,g.项目
+		) b
+		)a
+		where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+	<select id="getRepayManagerNum" resultType="Map">
+		select isnull(COUNT(a.id_prikey),0)people,isnull(SUM(a.还款金额),0)money from k_loan_repay a
+  		where  a.客户经理 = #{id}
+  		<choose><when test="date==null || date==''">and a.复审时间 is not null</when></choose>
+  		<choose><when test="date!=null &amp;&amp;date!=''">and left(CONVERT(date,a.复审时间),7) = #{date}</when></choose>
+	</select>
+	
+	<select id="getRepayManagerPeopleNum" resultType="Integer">
+		select COUNT(*)peopleNum from (
+		  select a.贷款合同号 from k_loan_repay a
+		  where a.客户经理 = #{id}
+		  <choose><when test="date==null || date==''">and a.复审时间 is not null</when></choose>
+  		  <choose><when test="date!=null &amp;&amp;date!=''">and left(CONVERT(date,a.复审时间),7) = #{date}</when></choose>
+		  group by a.贷款合同号
+		  )a
+	</select>
+	
+	
+	
+	
+</mapper>

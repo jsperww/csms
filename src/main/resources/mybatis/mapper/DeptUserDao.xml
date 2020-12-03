@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.DeptUserDao">
+	
+	
+	<select id="selectDeptById" resultType="Map">
+		select rtrim(单位代码) id,''pId,rtrim(单位名称)name from hbcm.._DEPT where 单位代码=#{id}
+	</select>
+	
+	<select id="selectDeptSon" resultType="Map">
+		select rtrim(单位代码) id,LEFT(单位代码,LEN(#{pId})) pId,rtrim(单位名称)name from hbcm.._DEPT where left(单位代码,LEN(#{pId})) = #{pId} and LEN(单位代码) = LEN(#{pId})+3
+	</select>
+	
+	<select id="selectDeptUser" resultType="Map">
+		 select rtrim(名称)id,RTRIM(描述)name,RTRIM(手机号码) phone from hbcm.._USER where 部门单位 = #{id}
+	</select>
+	
+	<select id="selectDeptAllUser" resultType="Map">
+		select rtrim(名称)id,RTRIM(描述)name,RTRIM(手机号码) phone from hbcm.._USER where left(部门单位,len(#{id})) = #{id}
+	</select>
+	
+	<select id="selectDeptByUserId" resultType="String">
+		select rtrim(部门单位)deptId from hbcm.._USER where rtrim(名称)=#{id}
+	</select>
+
+	<select id="selectUserByUserId" resultType="Map" >
+		select rtrim(名称) id,RTRIM(描述) name,RTRIM(手机号码) phone,RTRIM(部门单位) deptId from hbcm.._USER where 名称 = #{id}
+	</select>
+
+	<select id="selectDept" resultType="Map">
+		select RTRIM(单位代码) id,RTRIM(单位名称) name,left(RTRIM(单位代码),LEN(RTRIM(单位代码))-3) pId
+		from
+		hbcm.._DEPT
+		<where>
+			LEN(RTRIM(单位代码)) = (LEN('${pId}') + 3)
+			<choose><when test="pId!=null &amp;&amp; pId!=''">and LEFT(单位代码,LEN('${pId}')) = #{pId}</when></choose>
+		</where>
+		ORDER BY id
+	</select>
+</mapper>

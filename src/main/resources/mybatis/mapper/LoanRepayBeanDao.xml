@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanRepayBeanDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_loan_repay
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		贷款合同号,Convert(decimal(18,2),还款金额) 还款金额,贷款类型,还款类型,Convert(decimal(18,2),还款本金) 还款本金,Convert(decimal(18,2),还款利息) 还款利息,Convert(decimal(18,2),结欠本金) 结欠本金,Convert(decimal(18,2),结欠利息) 结欠利息,Convert(decimal(18,2),原结欠本金) 原结欠本金,Convert(decimal(18,2),原结欠利息) 原结欠利息,执行利率,客户经理,审核状态,初审人员,初审时间,复审人员,复审时间,抹账人员,抹账时间,还款方式,还款机构,Convert(decimal(18,2),核销时欠息) 核销时欠息,Convert(decimal(18,2),表外欠息) 表外欠息,Convert(decimal(18,2),原核销时欠息) 原核销时欠息,Convert(decimal(18,2),原表外欠息) 原表外欠息,还款核销时欠息,还款表外欠息,客户经理类型
+	</sql>
+	<sql id="fieldAllInsert">
+		贷款合同号,还款金额,贷款类型,还款类型,还款本金,还款利息,结欠本金, 结欠利息,原结欠本金, 原结欠利息,执行利率,客户经理,审核状态,初审人员,初审时间,复审人员,复审时间,抹账人员,抹账时间,还款方式,还款机构,核销时欠息,表外欠息,原核销时欠息, 原表外欠息,还款核销时欠息,还款表外欠息,客户经理类型
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(贷款合同号) 贷款合同号,Convert(decimal(18,2),还款金额) 还款金额,贷款类型,还款类型,Convert(decimal(18,2),还款本金) 还款本金,Convert(decimal(18,2),还款利息) 还款利息,Convert(decimal(18,2),结欠本金) 结欠本金,Convert(decimal(18,2),结欠利息) 结欠利息,Convert(decimal(18,2),原结欠本金) 原结欠本金,Convert(decimal(18,2),原结欠利息) 原结欠利息,执行利率,RTRIM(客户经理) 客户经理,审核状态,RTRIM(初审人员) 初审人员,初审时间,RTRIM(复审人员) 复审人员,复审时间,RTRIM(抹账人员) 抹账人员,抹账时间,还款方式,还款机构,Convert(decimal(18,2),核销时欠息) 核销时欠息,Convert(decimal(18,2),表外欠息) 表外欠息,Convert(decimal(18,2),原核销时欠息) 原核销时欠息,Convert(decimal(18,2),原表外欠息) 原表外欠息,还款核销时欠息,还款表外欠息,客户经理类型
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.贷款合同号) 贷款合同号,Convert(decimal(18,2),a.还款金额) 还款金额,a.贷款类型,a.还款类型,Convert(decimal(18,2),a.还款本金) 还款本金,Convert(decimal(18,2),a.还款利息) 还款利息,Convert(decimal(18,2),a.结欠本金) 结欠本金,Convert(decimal(18,2),a.结欠利息) 结欠利息,Convert(decimal(18,2),a.原结欠本金) 原结欠本金,Convert(decimal(18,2),a.原结欠利息) 原结欠利息,a.执行利率,RTRIM(a.客户经理) 客户经理,a.审核状态,RTRIM(a.初审人员) 初审人员,a.初审时间,RTRIM(a.复审人员) 复审人员,a.复审时间,RTRIM(a.抹账人员) 抹账人员,a.抹账时间,a.还款方式,a.还款机构,Convert(decimal(18,2),a.核销时欠息) 核销时欠息,Convert(decimal(18,2),a.表外欠息) 表外欠息,Convert(decimal(18,2),a.原核销时欠息) 原核销时欠息,Convert(decimal(18,2),a.原表外欠息) 原表外欠息,a.还款核销时欠息,a.还款表外欠息,a.客户经理类型
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanRepayBean">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="repayAmount" column="还款金额" />
+		<result property="loanType" column="贷款类型" />
+		<result property="repayType" column="还款类型" />
+		<result property="repayCapitalAmount" column="还款本金" />
+		<result property="repayInterestAmount" column="还款利息" />
+		<result property="leftCapitalAmount" column="结欠本金" />
+		<result property="leftInterestAmount" column="结欠利息" />
+		<result property="heXiaoLeftInterestAmount" column="核销时欠息" />
+		<result property="biaoWaiLeftInterestAmount" column="表外欠息" />
+		<result property="sourceHeXiaoLeftInterestAmount" column="原核销时欠息" />
+		<result property="sourceBiaoWaiLeftInterestAmount" column="原表外欠息" />
+		<result property="sourceLeftCapitalAmount" column="原结欠本金" />
+		<result property="sourceLeftInterestAmount" column="原结欠利息" />
+		<result property="loanNewMonthRate" column="执行利率" />
+		<result property="customerManage" column="客户经理" />
+		<result property="status" column="审核状态" />
+		<result property="checkFirst" column="初审人员" />
+		<result property="checkFirstDate" column="初审时间" />
+		<result property="checkSecond" column="复审人员" />
+		<result property="checkSecondDate" column="复审时间" />
+		<result property="revokeFirst" column="抹账人员" />
+		<result property="revokeDate" column="抹账时间" />
+		<result property="repayWay" column="还款方式" />
+		<result property="org" column="还款机构" />
+		<result property="nodeId" column="nodeId" />
+		<result property="repayHeXiaoLeftInterestAmount" column="还款核销时欠息" />
+		<result property="repayBiaoWaiLeftInterestAmount" column="还款表外欠息" />
+		<result property="customerManageType" column="客户经理类型" />
+
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAllInsert" />
+		)
+		values(#{loanContractNum},#{repayAmount},#{loanType},#{repayType},#{repayCapitalAmount},#{repayInterestAmount},#{leftCapitalAmount},#{leftInterestAmount},#{sourceLeftCapitalAmount},#{sourceLeftInterestAmount},#{loanNewMonthRate},#{customerManage},#{status},#{checkFirst},#{checkFirstDate},#{checkSecond},#{checkSecondDate},#{revokeFirst},#{revokeDate},#{repayWay},#{org},
+		#{heXiaoLeftInterestAmount},#{biaoWaiLeftInterestAmount},#{sourceHeXiaoLeftInterestAmount},#{sourceBiaoWaiLeftInterestAmount},#{repayHeXiaoLeftInterestAmount}, #{repayBiaoWaiLeftInterestAmount},#{customerManageType})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAllInsert" />
+		)
+		values(#{loanContractNum},#{repayAmount},#{loanType},#{repayType},#{repayCapitalAmount},#{repayInterestAmount},#{leftCapitalAmount},#{leftInterestAmount},#{sourceLeftCapitalAmount},#{sourceLeftInterestAmount},#{loanNewMonthRate},#{customerManage},#{status},#{checkFirst},#{checkFirstDate},#{checkSecond},#{checkSecondDate},#{revokeFirst},#{revokeDate},#{repayWay},#{org},
+		#{heXiaoLeftInterestAmount},#{biaoWaiLeftInterestAmount},#{sourceHeXiaoLeftInterestAmount},#{sourceBiaoWaiLeftInterestAmount},#{repayHeXiaoLeftInterestAmount}, #{repayBiaoWaiLeftInterestAmount},#{customerManageType})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAllInsert" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.loanContractNum},#{item.repayAmount},#{item.loanType},#{item.repayType},#{item.repayCapitalAmount},#{item.repayInterestAmount},#{item.leftCapitalAmount},#{item.leftInterestAmount},#{item.sourceLeftCapitalAmount},#{item.sourceLeftInterestAmount},#{item.loanNewMonthRate},#{item.customerManage},#{item.status},#{item.checkFirst},#{item.checkFirstDate},#{item.checkSecond},#{item.checkSecondDate},#{item.revokeFirst},#{item.revokeDate},#{item.repayWay},#{item.org},#{item.customerManageType})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null">and 贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="repayAmount!=null">and 还款金额 = #{repayAmount}</when></choose>
+			<choose><when test="repayType!=null">and 还款类型 = #{repayType}</when></choose>
+			<choose><when test="loanType!=null">and 贷款类型 = #{loanType}</when></choose>
+            <choose><when test="repayWay!=null">and 还款方式 = #{repayWay}</when></choose>
+			<choose><when test="repayCapitalAmount!=null">and 还款本金 = #{repayCapitalAmount}</when></choose>
+			<choose><when test="repayInterestAmount!=null">and 还款利息 = #{repayInterestAmount}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and 结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and 结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="sourceLeftCapitalAmount!=null">and 原结欠本金 = #{sourceLeftCapitalAmount}</when></choose>
+			<choose><when test="sourceLeftInterestAmount!=null">and 原结欠利息 = #{sourceLeftInterestAmount}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and 执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="customerManage!=null">and 客户经理 = #{customerManage}</when></choose>
+			<choose><when test="status!=null">and 审核状态 = #{status}</when></choose>
+			<choose><when test="checkFirst!=null">and 初审人员 = #{checkFirst}</when></choose>
+			<choose><when test="checkFirstDate!=null">and 初审时间 = #{checkFirstDate}</when></choose>
+			<choose><when test="checkSecond!=null">and 复审人员 = #{checkSecond}</when></choose>
+			<choose><when test="checkSecondDate!=null">and 复审时间 = #{checkSecondDate}</when></choose>
+			<choose><when test="revokeFirst!=null">and 抹账人员 = #{revokeFirst}</when></choose>
+			<choose><when test="revokeDate!=null">and 抹账时间 = #{revokeDate}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = #{loanContractNum},</if>
+		<if test="repayAmount!=null">还款金额 = #{repayAmount},</if>
+		<if test="repayType!=null">还款类型 = #{repayType},</if>
+		<if test="loanType!=null">贷款类型 = #{loanType},</if>
+		<if test="repayCapitalAmount!=null">还款本金 = #{repayCapitalAmount},</if>
+		<if test="repayInterestAmount!=null">还款利息 = #{repayInterestAmount},</if>
+		<if test="repayHeXiaoLeftInterestAmount!=null">还款核销时欠息 = #{repayHeXiaoLeftInterestAmount},</if>
+		<if test="repayBiaoWaiLeftInterestAmount!=null">还款表外欠息 = #{repayBiaoWaiLeftInterestAmount},</if>
+		<if test="leftCapitalAmount!=null">结欠本金 = #{leftCapitalAmount},</if> 
+		<if test="leftInterestAmount!=null">结欠利息 = #{leftInterestAmount},</if>
+		<if test="heXiaoLeftInterestAmount!=null">核销时欠息 = #{heXiaoLeftInterestAmount},</if>
+		<if test="biaoWaiLeftInterestAmount!=null">表外欠息 = #{biaoWaiLeftInterestAmount},</if>
+		<if test="sourceHeXiaoLeftInterestAmount!=null">原核销时欠息 = #{sourceHeXiaoLeftInterestAmount},</if>
+		<if test="sourceBiaoWaiLeftInterestAmount!=null">原表外欠息 = #{sourceBiaoWaiLeftInterestAmount},</if>
+		<if test="sourceLeftCapitalAmount!=null">原结欠本金 = #{sourceLeftCapitalAmount},</if> 
+		<if test="sourceLeftInterestAmount!=null">原结欠利息 = #{sourceLeftInterestAmount},</if> 
+		<if test="loanNewMonthRate!=null">执行利率 = #{loanNewMonthRate},</if> 
+		<if test="customerManage!=null">客户经理 = #{customerManage},</if> 
+		<if test="status!=null">审核状态 = #{status},</if> 
+		<if test="checkFirst!=null">初审人员 = #{checkFirst},</if> 
+		<if test="checkFirstDate!=null">初审时间 = #{checkFirstDate},</if> 
+		<if test="checkSecond!=null">复审人员 = #{checkSecond},</if> 
+		<if test="checkSecondDate!=null">复审时间 = #{checkSecondDate},</if>
+		<if test="revokeFirst!=null">抹账人员 = #{revokeFirst},</if>
+		<if test="revokeDate!=null">抹账时间 = #{revokeDate},</if>
+        <if test="repayWay!=null">还款方式 = #{repayWay},</if>
+		<if test="org!=null">还款机构 = #{org},</if>
+		<if test="customerManageType!=null">客户经理类型 = #{customerManageType},</if>
+        </trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = NULL,</if>
+		<if test="repayAmount!=null">还款金额 = NULL,</if>
+		<if test="repayType!=null">还款类型 = NULL,</if>
+		<if test="loanType!=null">贷款类型 = NULL,</if>
+        <if test="repayWay!=null">还款方式 = NULL,</if>
+		<if test="repayCapitalAmount!=null">还款本金 = NULL,</if>
+		<if test="repayInterestAmount!=null">还款利息 = NULL,</if>
+		<if test="leftCapitalAmount!=null">结欠本金 = NULL,</if>
+		<if test="leftInterestAmount!=null">结欠利息 = NULL,</if>
+		<if test="sourceLeftCapitalAmount!=null">原结欠本金 = NULL,</if>
+		<if test="sourceLeftInterestAmount!=null">原结欠利息 = NULL,</if>
+		<if test="loanNewMonthRate!=null">执行利率 = NULL,</if>
+		<if test="customerManage!=null">客户经理 = NULL,</if>
+		<if test="status!=null">审核状态 = NULL,</if>
+		<if test="checkFirst!=null">初审人员 = NULL,</if>
+		<if test="checkFirstDate!=null">初审时间 = NULL,</if>
+		<if test="checkSecond!=null">复审人员 = NULL,</if>
+		<if test="checkSecondDate!=null">复审时间 = NULL,</if>
+		<if test="revokeFirst!=null">抹账人员 = NULL,</if>
+		<if test="revokeDate!=null">抹账时间 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey,r.项目 statusName,l.名称 name,l.贷款账号 loanAccountNum,o.项目 orgName,l.首贷金额 earliestLoanAmount,way.项目 repayWayName,
+		u1.描述 checkFirstName,u2.描述 checkSecondName,l.借款日期 loanBeginDate,l.到期日期 loanEndDate
+		from
+		<include refid="tableName" /> a
+		left join k_loan_info l on a.贷款合同号 = l.贷款合同号
+		left join d_repaychekstatus r on a.审核状态 = r.代码
+		left join d_org o on a.还款机构 = o.代码
+		left join d_loanrepayway way  on a.还款方式 = way.代码
+		left join hbcm.._user u1 on a.初审人员 = u1.名称
+        left join hbcm.._user u2 on a.复审人员 = u2.名称
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey,o.项目 orgName,loantype.项目 loanTypeName,way.项目 repayWayName
+		from
+		<include refid="tableName" /> a
+		left join d_org o on a.还款机构 = o.代码
+		left join d_loantype loantype on a.贷款类型 = loantype.代码
+		left join d_loanrepayway way  on a.还款方式 = way.代码
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="repayAmount!=null">and a.还款金额 = #{repayAmount}</when></choose>
+			<choose><when test="repayType!=null">and a.还款类型 = #{repayType}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="repayCapitalAmount!=null">and a.还款本金 = #{repayCapitalAmount}</when></choose>
+			<choose><when test="repayInterestAmount!=null">and a.还款利息 = #{repayInterestAmount}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and a.结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and a.结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="sourceLeftCapitalAmount!=null">and a.原结欠本金 = #{sourceLeftCapitalAmount}</when></choose>
+			<choose><when test="sourceLeftInterestAmount!=null">and a.原结欠利息 = #{sourceLeftInterestAmount}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and a.执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="customerManage!=null &amp;&amp; customerManage!=''">and a.客户经理 = #{customerManage}</when></choose>
+			<choose><when test="status!=null">and a.审核状态 = #{status}</when></choose>
+			<choose><when test="checkFirst!=null &amp;&amp; checkFirst!=''">and a.初审人员 = #{checkFirst}</when></choose>
+			<choose><when test="checkFirstDate!=null">and a.初审时间 = #{checkFirstDate}</when></choose>
+			<choose><when test="checkSecond!=null &amp;&amp; checkSecond!=''">and a.复审人员 = #{checkSecond}</when></choose>
+			<choose><when test="checkSecondDate!=null">and a.复审时间 = #{checkSecondDate}</when></choose>
+			<choose><when test="revokeFirst!=null &amp;&amp; revokeFirst!=''">and a.抹账人员 = #{revokeFirst}</when></choose>
+			<choose><when test="revokeDate!=null">and a.抹账时间 = #{revokeDate}</when></choose>
+            <choose><when test="repayWay!=null">and a.还款方式 = #{repayWay}</when></choose>
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="repayAmount!=null">and a.还款金额 = #{repayAmount}</when></choose>
+			<choose><when test="repayType!=null">and a.还款类型 = #{repayType}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="repayCapitalAmount!=null">and a.还款本金 = #{repayCapitalAmount}</when></choose>
+			<choose><when test="repayInterestAmount!=null">and a.还款利息 = #{repayInterestAmount}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and a.结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and a.结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="sourceLeftCapitalAmount!=null">and a.原结欠本金 = #{sourceLeftCapitalAmount}</when></choose>
+			<choose><when test="sourceLeftInterestAmount!=null">and a.原结欠利息 = #{sourceLeftInterestAmount}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and a.执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="customerManage!=null &amp;&amp; customerManage!=''">and a.客户经理 = #{customerManage}</when></choose>
+			<choose><when test="status!=null">and a.审核状态 = #{status}</when></choose>
+			<choose><when test="checkFirst!=null &amp;&amp; checkFirst!=''">and a.初审人员 = #{checkFirst}</when></choose>
+			<choose><when test="checkFirstDate!=null">and a.初审时间 = #{checkFirstDate}</when></choose>
+			<choose><when test="checkSecond!=null &amp;&amp; checkSecond!=''">and a.复审人员 = #{checkSecond}</when></choose>
+			<choose><when test="checkSecondDate!=null">and a.复审时间 = #{checkSecondDate}</when></choose>
+			<choose><when test="revokeFirst!=null &amp;&amp; revokeFirst!=''">and a.抹账人员 = #{revokeFirst}</when></choose>
+			<choose><when test="revokeDate!=null">and a.抹账时间 = #{revokeDate}</when></choose>
+            <choose><when test="repayWay!=null">and a.还款方式 = #{repayWay}</when></choose>
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 like '%${loanContractNum}%'</when></choose>
+			<choose><when test="repayAmount!=null">and a.还款金额 = #{repayAmount}</when></choose>
+			<choose><when test="repayType!=null">and a.还款类型 = #{repayType}</when></choose>
+			<!--<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>-->
+			<choose><when test="repayCapitalAmount!=null">and a.还款本金 = #{repayCapitalAmount}</when></choose>
+			<choose><when test="repayInterestAmount!=null">and a.还款利息 = #{repayInterestAmount}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and a.结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and a.结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="sourceLeftCapitalAmount!=null">and a.原结欠本金 = #{sourceLeftCapitalAmount}</when></choose>
+			<choose><when test="sourceLeftInterestAmount!=null">and a.原结欠利息 = #{sourceLeftInterestAmount}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and a.执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="customerManage!=null &amp;&amp; customerManage!=''">and a.客户经理 like '%${customerManage}%'</when></choose>
+			<choose><when test="status!=null">and a.审核状态 = #{status}</when></choose>
+			<choose><when test="checkFirst!=null &amp;&amp; checkFirst!=''">and a.初审人员 like '%${checkFirst}%'</when></choose>
+			<choose><when test="checkFirstDate!=null">and a.初审时间 = #{checkFirstDate}</when></choose>
+			<choose><when test="checkSecond!=null &amp;&amp; checkSecond!=''">and a.复审人员 like '%${checkSecond}%'</when></choose>
+			<choose><when test="checkSecondDate!=null">and a.复审时间 = #{checkSecondDate}</when></choose>
+			<choose><when test="revokeFirst!=null &amp;&amp; revokeFirst!=''">and a.抹账人员 like '%${revokeFirst}%'</when></choose>
+			<choose><when test="revokeDate!=null">and a.抹账时间 = #{revokeDate}</when></choose>
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and b.证件号码 = #{idNum}</when></choose>
+			<choose><when test="idType!=null &amp;&amp; idType!=''">and b.证件类型 like '%${idType}%'</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and b.联系电话 = #{mobile}</when></choose>
+			<choose><when test="loanType!=null &amp;&amp; loanType!=''">and b.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanWay!=null &amp;&amp; loanWay!=''">and b.贷款方式 = #{loanWay}</when></choose>
+			<choose><when test="loanStatus!=null &amp;&amp; loanStatus!=''">and b.贷款状态 = #{loanStatus}</when></choose>
+			<choose><when test="org!=null &amp;&amp; org!=''">and a.还款机构 = #{org}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and b.名称 = #{name}</when></choose>
+			<choose><when test="(userId!=null &amp;&amp; userId !='') &amp;&amp; (deptId !=null &amp;&amp; deptId !='')">
+				and (e.名称 = #{userId} or f.单位代码= #{deptId})</when></choose>
+            <choose><when test="repayWay!=null">and a.还款方式 = #{repayWay}</when></choose>
+			<choose><when test="loanBeginDate!=null">and convert(date,a.初审时间) >= #{loanBeginDate}</when></choose>
+			<choose><when test="loanEndDate!=null">and convert(date,a.初审时间) &lt;= #{loanEndDate}</when></choose>
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		left  join k_loan_info b on a.贷款合同号 = b.贷款合同号
+		left join k_loan_distribute d on a.贷款合同号 = d.贷款合同号
+		left join hbcm.._USER e on d.编号 = e.名称 and d.编号类型 = '1'
+		left join hbcm.._dept f on d.编号 = f.单位代码  and d.编号类型 = '2'
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey,a.idNum,a.idType,a.name,a.earliestLoanAmount,a.leftCapitalAmount,a.leftInterestAmount,a.idTypeName,a.statusName,a.orgName,a.repayWayName,a.repayTypeName,a.loanAccountNum,customerManageName
+		from (
+		select row_number() over (order by a.id_prikey desc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey,b.证件号码 idNum,b.证件类型 idType,b.名称 name,Convert(decimal(18,2),b.首贷金额) earliestLoanAmount,Convert(decimal(18,2),b.结欠本金) leftCapitalAmount,Convert(decimal(18,2),b.结欠利息) leftInterestAmount,r.项目 statusName,way.项目 repayWayName,
+		RTRIM(c.项目)idTypeName , o.项目 orgName ,repayType.项目 repayTypeName,b.贷款账号 loanAccountNum, isnull(e.描述,f.单位名称) customerManageName
+		from
+		<include refid="tableName" /> a
+		left  join k_loan_info b on a.贷款合同号 = b.贷款合同号
+		left join d_idType c on b.证件类型 = c.代码
+		left join d_repaychekstatus r on a.审核状态 = r.代码
+		left join hbcm.._USER e on a.客户经理 = e.名称 and a.客户经理类型 = '1'
+		left join hbcm.._dept f on a.客户经理 = f.单位代码  and a.客户经理类型 = '2'
+		left join d_org o on a.还款机构 = o.代码
+		left join d_loanrepayway way on a.还款方式 = way.代码
+		left join d_repayType repayType on a.还款类型 = repayType.代码
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findRepayPagingData"  resultMap="com.hbsoft.csms.dao.LoanInfoBeanDao.resultMap">
+		select  RTRIM(证件号码) 证件号码,RTRIM(证件类型) 证件类型,RTRIM(名称) 名称,首贷金额,a.结欠本金,a.结欠利息,a.贷款合同号,a.借款日期,a.到期日期
+		from(
+		select ROW_NUMBER() over(partition BY 贷款合同号 order by 复审时间 desc) n ,* from k_loan_repay) t
+		left join k_loan_info a on t.贷款合同号 = a.贷款合同号
+
+		where t.n = 1
+		<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 like '%${idNum}%'</when></choose>
+		<choose><when test="idType!=null &amp;&amp; idType!=''">and a.证件类型 like '%${idType}%'</when></choose>
+		<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 like '%${name}%'</when></choose>
+		<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.联系电话 like '%${mobile}%'</when></choose>
+	</select>
+
+	<select id="findRepayPagingCount" resultType="Integer">
+		select  count(*) _row
+		from(
+		select ROW_NUMBER() over(partition BY 贷款合同号 order by 复审时间 desc) n ,* from k_loan_repay) t
+		left join k_loan_info a on t.贷款合同号 = a.贷款合同号
+		where t.n = 1
+		<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 like '%${idNum}%'</when></choose>
+		<choose><when test="idType!=null &amp;&amp; idType!=''">and a.证件类型 like '%${idType}%'</when></choose>
+		<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 like '%${name}%'</when></choose>
+		<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.联系电话 like '%${mobile}%'</when></choose>
+	</select>
+
+	<select id="findLatestRepayRecord" resultMap="resultMap">
+		select top 1
+		<include refid="fieldTrimAll2" />,a.id_prikey,b.当前节点 nodeId
+		from
+		k_loan_repay a
+		left join (select top 100 percent * from k_process_business order by 修改时间 desc) b on a.贷款合同号 = b.业务编号
+		where  a.贷款合同号 = #{loanContractNum} and CONVERT(DATE,a.复审时间) = CONVERT(DATE,GETDATE())
+		order by id_prikey desc
+	</select>
+
+	<select id="findLatestRepayByLoanContractNumAndRepayType" resultMap="resultMap">
+		select top 1
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		k_loan_repay a
+		where  a.贷款合同号 = #{loanContractNum} and 还款类型 in (1,2)
+		order by id_prikey desc
+	</select>
+
+
+</mapper>

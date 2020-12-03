@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.ProcessFileBeanDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_process_file
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		业务id,节点id,附件类型,附件,批次代码,操作人,操作时间
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(业务id) 业务id,节点id,RTRIM(附件类型) 附件类型,RTRIM(附件) 附件,RTRIM(批次代码) 批次代码,RTRIM(操作人) 操作人,操作时间
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.业务id) 业务id,a.节点id,RTRIM(a.附件类型) 附件类型,RTRIM(a.附件) 附件,RTRIM(a.批次代码) 批次代码,RTRIM(a.操作人) 操作人,a.操作时间
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.ProcessFileBean">
+		<id property="id_prikey" column="ID_PRIKEY"/>
+		<result property="businessId" column="业务id" />
+		<result property="nodeId" column="节点id" />
+		<result property="appendixType" column="附件类型" />
+		<result property="appendix" column="附件" />
+		<result property="batchCode" column="批次代码" />
+		<result property="operator" column="操作人" />
+		<result property="operateTime" column="操作时间" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{businessId},#{nodeId},#{appendixType},#{appendix},#{batchCode},#{operator},#{operateTime})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{businessId},#{nodeId},#{appendixType},#{appendix},#{batchCode},#{operator},#{operateTime})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.businessId},#{item.nodeId},#{item.appendixType},#{item.appendix},#{item.batchCode},#{item.operator},#{item.operateTime})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="businessId!=null">and 业务id = #{businessId}</when></choose>
+			<choose><when test="nodeId!=null">and 节点id = #{nodeId}</when></choose>
+			<choose><when test="appendixType!=null">and 附件类型 = #{appendixType}</when></choose>
+			<choose><when test="appendix!=null">and 附件 = #{appendix}</when></choose>
+			<choose><when test="batchCode!=null">and 批次代码 = #{batchCode}</when></choose>
+			<choose><when test="operator!=null">and 操作人 = #{operator}</when></choose>
+			<choose><when test="operateTime!=null">and 操作时间 = #{operateTime}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where ID_PRIKEY = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where ID_PRIKEY in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="businessId!=null">业务id = #{businessId},</if> 
+		<if test="nodeId!=null">节点id = #{nodeId},</if> 
+		<if test="appendixType!=null">附件类型 = #{appendixType},</if> 
+		<if test="appendix!=null">附件 = #{appendix},</if> 
+		<if test="batchCode!=null">批次代码 = #{batchCode},</if> 
+		<if test="operator!=null">操作人 = #{operator},</if> 
+		<if test="operateTime!=null">操作时间 = #{operateTime},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and ID_PRIKEY = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="businessId!=null">业务id = NULL,</if>
+		<if test="nodeId!=null">节点id = NULL,</if>
+		<if test="appendixType!=null">附件类型 = NULL,</if>
+		<if test="appendix!=null">附件 = NULL,</if>
+		<if test="batchCode!=null">批次代码 = NULL,</if>
+		<if test="operator!=null">操作人 = NULL,</if>
+		<if test="operateTime!=null">操作时间 = NULL,</if>
+		</trim>
+		<where>
+			ID_PRIKEY = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		where a.ID_PRIKEY = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="businessId!=null &amp;&amp; businessId!=''">and a.业务id = #{businessId}</when></choose>
+			<choose><when test="nodeId!=null">and a.节点id = #{nodeId}</when></choose>
+			<choose><when test="appendixType!=null &amp;&amp; appendixType!=''">and a.附件类型 = #{appendixType}</when></choose>
+			<choose><when test="appendix!=null &amp;&amp; appendix!=''">and a.附件 = #{appendix}</when></choose>
+			<choose><when test="batchCode!=null &amp;&amp; batchCode!=''">and a.批次代码 = #{batchCode}</when></choose>
+			<choose><when test="operator!=null &amp;&amp; operator!=''">and a.操作人 = #{operator}</when></choose>
+			<choose><when test="operateTime!=null">and a.操作时间 = #{operateTime}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="businessId!=null &amp;&amp; businessId!=''">and a.业务id = #{businessId}</when></choose>
+			<choose><when test="nodeId!=null">and a.节点id = #{nodeId}</when></choose>
+			<choose><when test="appendixType!=null &amp;&amp; appendixType!=''">and a.附件类型 = #{appendixType}</when></choose>
+			<choose><when test="appendix!=null &amp;&amp; appendix!=''">and a.附件 = #{appendix}</when></choose>
+			<choose><when test="batchCode!=null &amp;&amp; batchCode!=''">and a.批次代码 = #{batchCode}</when></choose>
+			<choose><when test="operator!=null &amp;&amp; operator!=''">and a.操作人 = #{operator}</when></choose>
+			<choose><when test="operateTime!=null">and a.操作时间 = #{operateTime}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="businessId!=null &amp;&amp; businessId!=''">and a.业务id like '%${businessId}%'</when></choose>
+			<choose><when test="nodeId!=null">and a.节点id = #{nodeId}</when></choose>
+			<choose><when test="appendixType!=null &amp;&amp; appendixType!=''">and a.附件类型 like '%${appendixType}%'</when></choose>
+			<choose><when test="appendix!=null &amp;&amp; appendix!=''">and a.附件 like '%${appendix}%'</when></choose>
+			<choose><when test="batchCode!=null &amp;&amp; batchCode!=''">and a.批次代码 like '%${batchCode}%'</when></choose>
+			<choose><when test="operator!=null &amp;&amp; operator!=''">and a.操作人 like '%${operator}%'</when></choose>
+			<choose><when test="operateTime!=null">and a.操作时间 = #{operateTime}</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,ID_PRIKEY
+		from (
+		select row_number() over (order by a.ID_PRIKEY asc) RN,
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.ProcessOperatorConfigBeanDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_process_operator_config
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		节点id,角色类型,角色,创建时间,创建者,修改时间,修改者
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		节点id,RTRIM(角色类型) 角色类型,RTRIM(角色) 角色,创建时间,RTRIM(创建者) 创建者,修改时间,RTRIM(修改者) 修改者
+	</sql>
+	<sql id="fieldTrimAll2">
+		a.节点id,RTRIM(a.角色类型) 角色类型,RTRIM(a.角色) 角色,a.创建时间,RTRIM(a.创建者) 创建者,a.修改时间,RTRIM(a.修改者) 修改者
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.ProcessOperatorConfigBean">
+		<id property="id_prikey" column="ID_PRIKEY"/>
+		<result property="nodeId" column="节点id" />
+		<result property="roleType" column="角色类型" />
+		<result property="role" column="角色" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+		<result property="updateOn" column="修改时间" />
+		<result property="updateBy" column="修改者" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{nodeId},#{roleType},#{role},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{nodeId},#{roleType},#{role},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.nodeId},#{item.roleType},#{item.role},#{item.createOn},#{item.createBy},#{item.updateOn},#{item.updateBy})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null">and 节点id = #{nodeId}</when></choose>
+			<choose><when test="roleType!=null">and 角色类型 = #{roleType}</when></choose>
+			<choose><when test="role!=null">and 角色 = #{role}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and 修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null">and 修改者 = #{updateBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where ID_PRIKEY = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where ID_PRIKEY in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="nodeId!=null">节点id = #{nodeId},</if> 
+		<if test="roleType!=null">角色类型 = #{roleType},</if> 
+		<if test="role!=null">角色 = #{role},</if> 
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		<if test="updateOn!=null">修改时间 = #{updateOn},</if> 
+		<if test="updateBy!=null">修改者 = #{updateBy},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and ID_PRIKEY = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="nodeId!=null">节点id = NULL,</if>
+		<if test="roleType!=null">角色类型 = NULL,</if>
+		<if test="role!=null">角色 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		<if test="updateOn!=null">修改时间 = NULL,</if>
+		<if test="updateBy!=null">修改者 = NULL,</if>
+		</trim>
+		<where>
+			ID_PRIKEY = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		where a.ID_PRIKEY = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null">and a.节点id = #{nodeId}</when></choose>
+			<choose><when test="roleType!=null &amp;&amp; roleType!=''">and a.角色类型 = #{roleType}</when></choose>
+			<choose><when test="role!=null &amp;&amp; role!=''">and a.角色 = #{role}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null">and a.节点id = #{nodeId}</when></choose>
+			<choose><when test="roleType!=null &amp;&amp; roleType!=''">and a.角色类型 = #{roleType}</when></choose>
+			<choose><when test="role!=null &amp;&amp; role!=''">and a.角色 = #{role}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.ID_PRIKEY = #{id_prikey}</when></choose>
+			<choose><when test="nodeId!=null">and a.节点id = #{nodeId}</when></choose>
+			<choose><when test="roleType!=null &amp;&amp; roleType!=''">and a.角色类型 like '%${roleType}%'</when></choose>
+			<choose><when test="role!=null &amp;&amp; role!=''">and a.角色 like '%${role}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 like '%${updateBy}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,ID_PRIKEY
+		from (
+		select row_number() over (order by a.ID_PRIKEY asc) RN,
+		<include refid="fieldTrimAll2" />,a.ID_PRIKEY
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

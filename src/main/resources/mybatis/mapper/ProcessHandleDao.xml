@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.ProcessHandleDao">
+	
+	<select id="findProcessBusinessPagingData" resultType = "com.hbsoft.csms.vo.LoanInfoVo">
+	 select a.name,a.idNum,a.remark,a.loanContractNum,a.logId,a.operateBy,a.operateOn,a.业务id id_prikey,a.pb_id_prikey,a.nodeId from
+	 ( SELECT row_number() over (order by a.ID_PRIKEY asc) RN,
+		b.名称 name,b.证件号码 idNum,c.备注 remark,b.贷款合同号 loanContractNum,c.id_prikey logId,c.操作时间 operateOn,d.描述 operateBy,a.id_prikey pb_id_prikey,
+		a.业务id,a.当前节点 nodeId
+	  FROM k_process_business a 
+	  left join  k_loan_info b on a.业务编号 = b.贷款合同号
+	  left join (select * from (select ROW_NUMBER() over(partition BY 业务id order by 操作时间 desc) n ,* from  k_process_log where 流程属性 = #{processAttribute}) t where t.n = 1  ) c
+	  on a.业务id = c.业务id
+	  left join hbcm.._USER d on c.操作人 = d.名称
+	  left join k_process_business_operator operator on a.id_prikey = operator.业务流程id and a.当前节点 = operator.节点
+	  <include refid="pagingWhere"/>
+  		)a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	<select id="findProcessBusinessPagingCount" resultType = "Integer">
+	 SELECT count(0) _row
+	  FROM k_process_business a 
+	  left join  k_loan_info b on a.业务编号 = b.贷款合同号
+	  left join (select * from (select ROW_NUMBER() over(partition BY 业务id order by 操作时间 desc) n ,* from  k_process_log where 流程属性 = #{processAttribute}) t where t.n = 1  ) c
+	  on a.业务id = c.业务id
+	  left join k_process_log e on c.节点id = e.下一节点 and e.流程属性 = #{processAttribute} and e.业务id = c.业务id
+	  left join hbcm.._USER f on e.操作人 = f.名称
+	  left join k_process_business_operator operator on a.id_prikey = operator.业务流程id and a.当前节点 = operator.节点
+	   <include refid="pagingWhere"/>
+	</select>
+
+	<select id="findProcessBusinessOperatePagingData" resultType = "com.hbsoft.csms.vo.LoanInfoVo">
+		 select a.name,a.idNum,a.remark,a.loanContractNum,a.logId,a.operateBy,a.operateOn,a.业务id id_prikey,a.operateTypeName,a.operateType,pb_id_prikey from
+	 	(SELECT row_number() over (order by a.ID_PRIKEY asc) RN,a.id_prikey pb_id_prikey,
+		b.名称 name,b.证件号码 idNum,c.备注 remark,b.贷款合同号 loanContractNum,c.id_prikey logId,c.操作时间 operateOn,d.描述 operateBy,a.业务id,processtype.项目 operateTypeName,c.操作类型 operateType
+		FROM (select * from (select ROW_NUMBER() over(partition BY 业务id order by 操作时间 desc) n ,* from  k_process_log where 流程属性 = #{processAttribute} and 操作人 = #{operator}) t where t.n = 1 and 节点id != #{notNodeId} ) c
+		left join k_process_business a on a.id_prikey = c.流程id
+		left join  k_loan_info b on a.业务编号= b.贷款合同号
+		left join hbcm.._USER d	on c.操作人 = d.名称
+		left join d_processtype processtype on c.操作类型 = processtype.代码
+		where a.流程属性 = #{processAttribute}
+		)a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findProcessBusinessOperatePagingCount" resultType = "Integer">
+		SELECT count(0) _row
+		FROM (select * from (select ROW_NUMBER() over(partition BY 业务id order by 操作时间 desc) n ,* from  k_process_log where 流程属性 = #{processAttribute} and 操作人 = #{operator}) t where t.n = 1 and 节点id != #{notNodeId}  ) c
+		left join k_process_business a
+		left join  k_loan_info b on a.业务编号 = b.贷款合同号
+		on a.业务id = c.业务id
+		left join hbcm.._USER d
+		on c.操作人 = d.名称
+		where a.流程属性 = #{processAttribute}
+	</select>
+
+
+
+	<select id="findMyProcessBusinessPagingData" resultType = "com.hbsoft.csms.vo.LoanInfoVo">
+		 select a.name,a.idNum,a.remark,a.loanContractNum,a.operateBy,a.operateOn,a.业务id id_prikey,operateTypeName,processName,processAttribute,a.operateType ,a.nodeName,processStatusName,processStatus,nodeId,pb_id_prikey,nodeOperator
+		 from
+	 	(SELECT row_number() over (order by a.ID_PRIKEY asc) RN,
+		b.名称 name,b.证件号码 idNum,c.备注 remark,b.贷款合同号 loanContractNum,c.操作时间 operateOn,rtrim(d.描述) operateBy,a.业务id id_prikey,processtype.项目 operateTypeName,
+		c.操作类型 operateType,a.业务id,a.当前节点 nodeId,a.id_prikey pb_id_prikey,
+		pro.项目 processName,pro.属性 processAttribute,pdetail.节点名称 nodeName,ps.项目 processStatusName,a.流程状态 processStatus,rtrim(u.描述) nodeOperator
+		FROM k_process_business a
+		left join k_process_business_operator operator on a.id_prikey = operator.业务流程id and a.当前节点 = operator.节点
+		left join k_loan_info b on a.业务编号= b.贷款合同号
+		left join k_process pro on a.流程属性 = pro.属性
+		left join k_process_detail pdetail on a.当前节点 = pdetail.节点
+		left join d_processstatus ps on ps.代码 = a.流程状态
+		left join hbcm.._USER d on a.创建者 = d.名称
+		left join  hbcm.._USER u on u.名称 = operator.操作人
+		left join (select * from (select ROW_NUMBER() over(partition BY 流程id order by 操作时间 desc) n ,* from  k_process_log ) t where t.n = 1  ) c on a.id_prikey = c.流程id
+		left join d_processtype processtype on c.操作类型 = processtype.代码
+		where a.创建者 = #{operator}
+		<choose><when test="processAttribute!=null">and a.流程属性  = #{processAttribute}</when></choose>
+		<choose><when test="notProcessAttribute!=null">and a.流程属性  != #{notProcessAttribute}</when></choose>
+		)a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findMyProcessBusinessPagingCount" resultType = "Integer">
+		SELECT count(0) _row
+		FROM k_process_business a
+		left join k_process_business_operator operator on a.id_prikey = operator.业务流程id and a.当前节点 = operator.节点
+		left join  k_loan_info b on a.业务编号 = b.贷款合同号
+		left join hbcm.._USER d on a.创建者 = d.名称
+		left join  hbcm.._USER u on u.名称 = operator.操作人
+		left join (select * from (select ROW_NUMBER() over(partition BY 流程id order by 操作时间 desc) n ,* from  k_process_log) t where t.n = 1  ) c on a.id_prikey = c.流程id
+		where a.创建者 = #{operator}
+		<choose><when test="processAttribute!=null">and a.流程属性  = #{processAttribute}</when></choose>
+		<choose><when test="notProcessAttribute!=null">and a.流程属性  != #{notProcessAttribute}</when></choose>
+	</select>
+
+	<select id="findAllUnfinishedProcess" resultType="com.hbsoft.csms.bean.ProcessBusinessBean">
+		 select 业务id businessId,业务编号 businessCode,流程属性 processAttribute,当前节点 nodeId,流程状态 processStatus,创建时间 createOn,修改时间 updateOn,创建者 createBy,修改者 updateBy,id_prikey from k_process_business where 流程状态 in (1,3)
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="processAttribute!=null">and a.流程属性  = #{processAttribute}</when></choose>
+			<choose><when test="processStatus!=null">and a.流程状态 = #{processStatus}</when></choose>
+			<choose><when test="operateType!=null">and c.操作类型 = #{operateType}</when></choose>
+			<choose><when test="userId !=null">	and  operator.操作人= #{userId}</when></choose>
+		</where>
+	</sql>
+		
+	
+</mapper>

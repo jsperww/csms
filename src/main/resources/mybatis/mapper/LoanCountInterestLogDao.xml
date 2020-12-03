@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanCountInterestLogDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_loan_count_Interest_log
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		贷款合同号,贷款类型,执行利率,结欠本金,原结欠利息,原核销时欠息,原表外欠息,产生利息,结欠利息,核销时欠息,表外欠息,计算时间
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(贷款合同号) 贷款合同号,贷款类型,执行利率,结欠本金,原结欠利息,原核销时欠息,原表外欠息,产生利息,结欠利息,核销时欠息,表外欠息,计算时间
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.贷款合同号) 贷款合同号,a.贷款类型,a.执行利率,a.结欠本金,a.原结欠利息,a.原核销时欠息,a.原表外欠息,a.产生利息,a.结欠利息,a.核销时欠息,a.表外欠息,a.计算时间
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanCountInterestLog">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="loanType" column="贷款类型" />
+		<result property="loanNewMonthRate" column="执行利率" />
+		<result property="leftCapitalAmount" column="结欠本金" />
+		<result property="beforeLeftInterestAmount" column="原结欠利息" />
+		<result property="beforeHeXiaoLeftInterestAmount" column="原核销时欠息" />
+		<result property="beforeBiaoWaiLeftInterestAmount" column="原表外欠息" />
+		<result property="makeInterestAmount" column="产生利息" />
+		<result property="leftInterestAmount" column="结欠利息" />
+		<result property="heXiaoLeftInterestAmount" column="核销时欠息" />
+		<result property="biaoWaiLeftInterestAmount" column="表外欠息" />
+		<result property="countDate" column="计算时间" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{loanType},#{loanNewMonthRate},#{leftCapitalAmount},#{beforeLeftInterestAmount},#{beforeHeXiaoLeftInterestAmount},#{beforeBiaoWaiLeftInterestAmount},#{makeInterestAmount},#{leftInterestAmount},#{heXiaoLeftInterestAmount},#{biaoWaiLeftInterestAmount},#{countDate})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{loanType},#{loanNewMonthRate},#{leftCapitalAmount},#{beforeLeftInterestAmount},#{beforeHeXiaoLeftInterestAmount},#{beforeBiaoWaiLeftInterestAmount},#{makeInterestAmount},#{leftInterestAmount},#{heXiaoLeftInterestAmount},#{biaoWaiLeftInterestAmount},#{countDate})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.loanContractNum},#{item.loanType},#{item.loanNewMonthRate},#{item.leftCapitalAmount},#{item.beforeLeftInterestAmount},#{item.beforeHeXiaoLeftInterestAmount},#{item.beforeBiaoWaiLeftInterestAmount},#{item.makeInterestAmount},#{item.leftInterestAmount},#{item.heXiaoLeftInterestAmount},#{item.biaoWaiLeftInterestAmount},#{item.countDate})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null">and 贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="loanType!=null">and 贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and 执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and 结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="beforeLeftInterestAmount!=null">and 原结欠利息 = #{beforeLeftInterestAmount}</when></choose>
+			<choose><when test="beforeHeXiaoLeftInterestAmount!=null">and 原核销时欠息 = #{beforeHeXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="beforeBiaoWaiLeftInterestAmount!=null">and 原表外欠息 = #{beforeBiaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="makeInterestAmount!=null">and 产生利息 = #{makeInterestAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and 结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="heXiaoLeftInterestAmount!=null">and 核销时欠息 = #{heXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="biaoWaiLeftInterestAmount!=null">and 表外欠息 = #{biaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="countDate!=null">and 计算时间 = #{countDate}</when></choose>
+		</where>
+	</delete>
+
+	<delete id="deleteByLoanContractNumAndCountDate">
+		delete
+		<include refid="tableName" />
+		where 贷款合同号 = #{loanContractNum} and convert(date,计算时间) > #{countDate}
+
+	</delete>
+
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = #{loanContractNum},</if> 
+		<if test="loanType!=null">贷款类型 = #{loanType},</if> 
+		<if test="loanNewMonthRate!=null">执行利率 = #{loanNewMonthRate},</if> 
+		<if test="leftCapitalAmount!=null">结欠本金 = #{leftCapitalAmount},</if> 
+		<if test="beforeLeftInterestAmount!=null">原结欠利息 = #{beforeLeftInterestAmount},</if> 
+		<if test="beforeHeXiaoLeftInterestAmount!=null">原核销时欠息 = #{beforeHeXiaoLeftInterestAmount},</if> 
+		<if test="beforeBiaoWaiLeftInterestAmount!=null">原表外欠息 = #{beforeBiaoWaiLeftInterestAmount},</if> 
+		<if test="makeInterestAmount!=null">产生利息 = #{makeInterestAmount},</if> 
+		<if test="leftInterestAmount!=null">结欠利息 = #{leftInterestAmount},</if> 
+		<if test="heXiaoLeftInterestAmount!=null">核销时欠息 = #{heXiaoLeftInterestAmount},</if> 
+		<if test="biaoWaiLeftInterestAmount!=null">表外欠息 = #{biaoWaiLeftInterestAmount},</if> 
+		<if test="countDate!=null">计算时间 = #{countDate},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = NULL,</if>
+		<if test="loanType!=null">贷款类型 = NULL,</if>
+		<if test="loanNewMonthRate!=null">执行利率 = NULL,</if>
+		<if test="leftCapitalAmount!=null">结欠本金 = NULL,</if>
+		<if test="beforeLeftInterestAmount!=null">原结欠利息 = NULL,</if>
+		<if test="beforeHeXiaoLeftInterestAmount!=null">原核销时欠息 = NULL,</if>
+		<if test="beforeBiaoWaiLeftInterestAmount!=null">原表外欠息 = NULL,</if>
+		<if test="makeInterestAmount!=null">产生利息 = NULL,</if>
+		<if test="leftInterestAmount!=null">结欠利息 = NULL,</if>
+		<if test="heXiaoLeftInterestAmount!=null">核销时欠息 = NULL,</if>
+		<if test="biaoWaiLeftInterestAmount!=null">表外欠息 = NULL,</if>
+		<if test="countDate!=null">计算时间 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+
+	<select id="findByLoanContractNumAndCountDate" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		 where a.贷款合同号 = #{loanContractNum} and  convert(date,a.计算时间) = #{countDate}
+	</select>
+
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and a.执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and a.结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="beforeLeftInterestAmount!=null">and a.原结欠利息 = #{beforeLeftInterestAmount}</when></choose>
+			<choose><when test="beforeHeXiaoLeftInterestAmount!=null">and a.原核销时欠息 = #{beforeHeXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="beforeBiaoWaiLeftInterestAmount!=null">and a.原表外欠息 = #{beforeBiaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="makeInterestAmount!=null">and a.产生利息 = #{makeInterestAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and a.结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="heXiaoLeftInterestAmount!=null">and a.核销时欠息 = #{heXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="biaoWaiLeftInterestAmount!=null">and a.表外欠息 = #{biaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="countDate!=null">and a.计算时间 = #{countDate}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and a.执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and a.结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="beforeLeftInterestAmount!=null">and a.原结欠利息 = #{beforeLeftInterestAmount}</when></choose>
+			<choose><when test="beforeHeXiaoLeftInterestAmount!=null">and a.原核销时欠息 = #{beforeHeXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="beforeBiaoWaiLeftInterestAmount!=null">and a.原表外欠息 = #{beforeBiaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="makeInterestAmount!=null">and a.产生利息 = #{makeInterestAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and a.结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="heXiaoLeftInterestAmount!=null">and a.核销时欠息 = #{heXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="biaoWaiLeftInterestAmount!=null">and a.表外欠息 = #{biaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="countDate!=null">and a.计算时间 = #{countDate}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 like '%${loanContractNum}%'</when></choose>
+			<choose><when test="loanType!=null">and a.贷款类型 = #{loanType}</when></choose>
+			<choose><when test="loanNewMonthRate!=null">and a.执行利率 = #{loanNewMonthRate}</when></choose>
+			<choose><when test="leftCapitalAmount!=null">and a.结欠本金 = #{leftCapitalAmount}</when></choose>
+			<choose><when test="beforeLeftInterestAmount!=null">and a.原结欠利息 = #{beforeLeftInterestAmount}</when></choose>
+			<choose><when test="beforeHeXiaoLeftInterestAmount!=null">and a.原核销时欠息 = #{beforeHeXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="beforeBiaoWaiLeftInterestAmount!=null">and a.原表外欠息 = #{beforeBiaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="makeInterestAmount!=null">and a.产生利息 = #{makeInterestAmount}</when></choose>
+			<choose><when test="leftInterestAmount!=null">and a.结欠利息 = #{leftInterestAmount}</when></choose>
+			<choose><when test="heXiaoLeftInterestAmount!=null">and a.核销时欠息 = #{heXiaoLeftInterestAmount}</when></choose>
+			<choose><when test="biaoWaiLeftInterestAmount!=null">and a.表外欠息 = #{biaoWaiLeftInterestAmount}</when></choose>
+			<choose><when test="countDate!=null">and a.计算时间 = #{countDate}</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<insert id="insertDataFromLoanCountInterestLogTemp">
+		 insert into k_loan_count_Interest_log
+		 select 贷款合同号 ,贷款类型 ,执行利率 ,结欠本金  ,原结欠利息 ,原核销时欠息,原表外欠息 ,产生利息 ,结欠利息,核销时欠息  ,表外欠息 ,计算时间,操作时间
+		 from k_loan_count_Interest_log_temp
+		 where 贷款合同号 = #{loanContractNum}
+	</insert>
+	
+</mapper>

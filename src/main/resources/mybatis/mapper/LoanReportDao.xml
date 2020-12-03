@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanReportDao">
+
+	<!--人数-->
+	<select id="loanInfoReportByTeam" resultType="map">
+		select
+		rtrim(d.单位代码) deptCode,isnull(rtrim(d.单位名称),'未分组')  deptName,count(0) cusNum
+		from k_loan_info a left join
+			(select b.编号 groupCode,b.贷款合同号
+			from  k_loan_distribute b
+			left join hbcm.._dept d on b.编号 = d.单位代码
+			where  b.编号类型 = '2'
+				<if test="deptId !=null &amp;&amp; deptId != '' ">and d.单位代码= #{deptId} </if>
+			union
+			select d.单位代码 groupCode,b.贷款合同号
+			from  k_loan_distribute b
+			left join hbcm.._USER c on b.编号 = c.名称
+			left join  hbcm.._dept d on d.单位代码 = c.部门单位
+			where b.编号类型 = '1'
+				<if test="deptId !=null &amp;&amp; deptId != '' ">and d.单位代码= #{deptId} </if>
+				) t on t.贷款合同号 =a.贷款合同号
+		left join  hbcm.._dept d on d.单位代码 = t.groupCode
+		group by  d.单位名称,d.单位代码 order by cusNum desc
+	</select>
+
+	<select id="loanInfoReportTotal" resultType="map">
+		   select
+			(select count(0) total from k_loan_info) total,
+			(select count(0) distribute from k_loan_distribute) distribute,
+			(select count(0) total from k_loan_info) - (select count(0) distribute from k_loan_distribute) noDistribute
+	</select>
+
+	<select id="loanInfoReportNoDistribute" resultType="map">
+		select count(0) total k_loan_info
+	</select>
+
+	<!--还款-->
+	<select id="loanRepayReportByTeam" resultType="map">
+		select 	t.deptCode,deptName,sum(repayAmount) repayAmount ,COUNT(0) rapayCount,sum(repayCapitalAmount) repayCapitalAmount,sum(repayInterestAmount) repayInterestAmount
+		from
+		(select RTRIM(ISNULL(d.单位代码,de.单位代码)) deptCode,RTRIM(ISNULL(d.单位名称,de.单位名称)) deptName,还款金额 repayAmount,还款本金 repayCapitalAmount,还款利息 repayInterestAmount
+		from k_loan_repay a
+		left join  hbcm.._dept d on d.单位代码 = a.客户经理 and a.客户经理类型 = 2
+		left join  hbcm.._USER u on u.名称 = a.客户经理 and a.客户经理类型 = 1 left join hbcm.._dept de on u.部门单位 = de.单位代码
+		where a.审核状态 in (2,5)
+		<if test="beginDate !=null &amp;&amp; beginDate != '' ">and 初审时间 >= #{beginDate} </if>
+		<if test="endDate !=null &amp;&amp; endDate != '' ">and 初审时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+		) t
+		group by  t.deptCode,t.deptName order by repayAmount desc,rapayCount desc
+
+	</select>
+
+	<select id="loanRepayReportTotal" resultType="map">
+		select '合计' deptName,
+		sum(还款金额) repayAmount,count(0) rapayCount,sum(还款本金) repayCapitalAmount,sum(还款利息) repayInterestAmount
+		from k_loan_repay a
+		left join
+			(select b.编号 groupCode,b.贷款合同号
+			from  k_loan_distribute b
+			left join hbcm.._dept d on b.编号 = d.单位代码
+			where  b.编号类型 = '2'
+			union
+			select d.单位代码 groupCode,b.贷款合同号
+			from  k_loan_distribute b
+			left join hbcm.._USER c on b.编号 = c.名称
+			left join  hbcm.._dept d on d.单位代码 = c.部门单位
+			where b.编号类型 = '1'
+				) t on t.贷款合同号 =a.贷款合同号
+		left join  hbcm.._dept d on d.单位代码 = t.groupCode
+		where a.审核状态 in (2,5)
+		<if test="beginDate !=null &amp;&amp; beginDate != '' ">and 初审时间 >= #{beginDate} </if>
+		<if test="endDate !=null &amp;&amp; endDate != '' ">and 初审时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+	</select>
+
+
+	<!--回访-->
+	<select id="loanVisitReportByTeam" resultType="map">
+		select
+		rtrim(d.单位代码) deptCode,isnull(rtrim(d.单位名称),'未分组') deptName,count(0) visitNum
+		from (select ROW_NUMBER() over(partition BY 贷款合同号 order by 回访时间 desc) n ,* from  k_loan_visit ) a
+		left join
+			(select b.编号 groupCode,b.贷款合同号
+			from  k_loan_distribute b
+			left join hbcm.._dept d on b.编号 = d.单位代码
+			where  b.编号类型 = '2'
+			union
+			select d.单位代码 groupCode,b.贷款合同号
+			from  k_loan_distribute b
+			left join hbcm.._USER c on b.编号 = c.名称
+			left join  hbcm.._dept d on d.单位代码 = c.部门单位
+			where b.编号类型 = '1'
+				) t on t.贷款合同号 =a.贷款合同号
+		left join  hbcm.._dept d on d.单位代码 = t.groupCode
+		where a.n = 1
+		<if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.回访时间 >= #{beginDate} </if>
+		<if test="endDate !=null &amp;&amp; endDate != '' ">and a.回访时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+		group by  d.单位名称,d.单位代码 order by visitNum desc
+	</select>
+
+	<select id="loanVisitReportTotal" resultType="map">
+		select
+		count(0) visitNum
+		from (select ROW_NUMBER() over(partition BY 贷款合同号 order by 回访时间 desc) n ,* from  k_loan_visit ) a
+		where a.n = 1
+		<if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.回访时间 >= #{beginDate} </if>
+		<if test="endDate !=null &amp;&amp; endDate != '' ">and a.回访时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+	</select>
+
+
+    <select id="loanUpdateReportByTeam" resultType="map">
+        select rtrim(d.单位代码) deptCode,isnull(rtrim(d.单位名称),'未分组') deptName,count(0) updateNum
+        from
+        (select ROW_NUMBER() over(partition BY 业务编号 order by 创建时间 desc) n ,* from  k_process_business where 流程属性 = 'loanInfo_update' and 流程状态 = 2) a
+        left join hbcm.._USER u on u.名称 = a.创建者
+        left join  hbcm.._dept d on d.单位代码 = u.部门单位
+        where a.n = 1
+        <if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.创建时间 >= #{beginDate} </if>
+        <if test="endDate !=null &amp;&amp; endDate != '' ">and a.创建时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+        group by  d.单位名称,d.单位代码
+        order by updateNum desc
+    </select>
+
+    <select id="loanUpdateReportTotal" resultType="map">
+         select count(0) total
+         from (select ROW_NUMBER() over(partition BY 业务编号 order by 创建时间 desc) n ,* from  k_process_business where 流程属性 = 'loanInfo_update' and 流程状态 = 2) w
+         where w.n=1
+        <if test="beginDate !=null &amp;&amp; beginDate != '' ">and a.创建时间 >= #{beginDate} </if>
+        <if test="endDate !=null &amp;&amp; endDate != '' ">and a.创建时间 &lt;= DATEADD(day,1,#{endDate}) </if>
+    </select>
+
+	<select id="loanInfoReportCountByTeam" resultType="Map">
+		select
+		rtrim(d.单位代码) deptCode,isnull(rtrim(d.单位名称),'未分组')  deptName,count(0) cusNum
+		from
+		(select b.编号 groupCode,b.贷款合同号
+		from  k_loan_distribute b
+		left join hbcm.._dept d on b.编号 = d.单位代码
+		where  b.编号类型 = '2'
+		and d.单位代码= #{deptId}
+		union
+		select d.单位代码 groupCode,b.贷款合同号
+		from  k_loan_distribute b
+		left join hbcm.._USER c on b.编号 = c.名称
+		left join  hbcm.._dept d on d.单位代码 = c.部门单位
+		where b.编号类型 = '1'
+		and d.单位代码= #{deptId}
+		) t
+		left join  hbcm.._dept d on d.单位代码 = t.groupCode
+		group by  d.单位名称,d.单位代码 order by cusNum desc
+	</select>
+
+
+
+</mapper>

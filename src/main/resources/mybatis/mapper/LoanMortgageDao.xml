@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanMortgageDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_loan_mortgage
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		贷款合同号,名称,单位,数量,估价,现状,价值,处理人,处理时间,备注,创建时间,创建者,修改时间,修改者
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(贷款合同号) 贷款合同号,RTRIM(名称) 名称,RTRIM(单位) 单位,数量,估价,现状,价值,RTRIM(处理人) 处理人,处理时间,RTRIM(备注) 备注,创建时间,RTRIM(创建者) 创建者,修改时间,RTRIM(修改者) 修改者
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.贷款合同号) 贷款合同号,RTRIM(a.名称) 名称,RTRIM(a.单位) 单位,a.数量,a.估价,a.现状,a.价值,RTRIM(a.处理人) 处理人,a.处理时间,RTRIM(a.备注) 备注,a.创建时间,RTRIM(a.创建者) 创建者,a.修改时间,RTRIM(a.修改者) 修改者
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanMortgage">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="name" column="名称" />
+		<result property="unit" column="单位" />
+		<result property="num" column="数量" />
+		<result property="estimate" column="估价" />
+		<result property="currentStatus" column="现状" />
+		<result property="handleValue" column="价值" />
+		<result property="handleBy" column="处理人" />
+		<result property="handleOn" column="处理时间" />
+		<result property="remark" column="备注" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+		<result property="updateOn" column="修改时间" />
+		<result property="updateBy" column="修改者" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{name},#{unit},#{num},#{estimate},#{currentStatus},#{handleValue},#{handleBy},#{handleOn},#{remark},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{name},#{unit},#{num},#{estimate},#{currentStatus},#{handleValue},#{handleBy},#{handleOn},#{remark},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.loanContractNum},#{item.name},#{item.unit},#{item.num},#{item.estimate},#{item.currentStatus},#{item.handleValue},#{item.handleBy},#{item.handleOn},#{item.remark},#{item.createOn},#{item.createBy},#{item.updateOn},#{item.updateBy})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete from
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null">and 贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="name!=null">and 名称 = #{name}</when></choose>
+			<choose><when test="unit!=null">and 单位 = #{unit}</when></choose>
+			<choose><when test="num!=null">and 数量 = #{num}</when></choose>
+			<choose><when test="estimate!=null">and 估价 = #{estimate}</when></choose>
+			<choose><when test="currentStatus!=null">and 现状 = #{currentStatus}</when></choose>
+			<choose><when test="handleValue!=null">and 价值 = #{handleValue}</when></choose>
+			<choose><when test="handleBy!=null">and 处理人 = #{handleBy}</when></choose>
+			<choose><when test="handleOn!=null">and 处理时间 = #{handleOn}</when></choose>
+			<choose><when test="remark!=null">and 备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and 修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null">and 修改者 = #{updateBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete from
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete from
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = #{loanContractNum},</if> 
+		<if test="name!=null">名称 = #{name},</if> 
+		<if test="unit!=null">单位 = #{unit},</if> 
+		<if test="num!=null">数量 = #{num},</if> 
+		<if test="estimate!=null">估价 = #{estimate},</if> 
+		<if test="currentStatus!=null">现状 = #{currentStatus},</if> 
+		<if test="handleValue!=null">价值 = #{handleValue},</if> 
+		<if test="handleBy!=null">处理人 = #{handleBy},</if> 
+		<if test="handleOn!=null">处理时间 = #{handleOn},</if> 
+		<if test="remark!=null">备注 = #{remark},</if> 
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		<if test="updateOn!=null">修改时间 = #{updateOn},</if> 
+		<if test="updateBy!=null">修改者 = #{updateBy},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = NULL,</if>
+		<if test="name!=null">名称 = NULL,</if>
+		<if test="unit!=null">单位 = NULL,</if>
+		<if test="num!=null">数量 = NULL,</if>
+		<if test="estimate!=null">估价 = NULL,</if>
+		<if test="currentStatus!=null">现状 = NULL,</if>
+		<if test="handleValue!=null">价值 = NULL,</if>
+		<if test="handleBy!=null">处理人 = NULL,</if>
+		<if test="handleOn!=null">处理时间 = NULL,</if>
+		<if test="remark!=null">备注 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		<if test="updateOn!=null">修改时间 = NULL,</if>
+		<if test="updateBy!=null">修改者 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="unit!=null &amp;&amp; unit!=''">and a.单位 = #{unit}</when></choose>
+			<choose><when test="num!=null">and a.数量 = #{num}</when></choose>
+			<choose><when test="estimate!=null">and a.估价 = #{estimate}</when></choose>
+			<choose><when test="currentStatus!=null">and a.现状 = #{currentStatus}</when></choose>
+			<choose><when test="handleValue!=null">and a.价值 = #{handleValue}</when></choose>
+			<choose><when test="handleBy!=null &amp;&amp; handleBy!=''">and a.处理人 = #{handleBy}</when></choose>
+			<choose><when test="handleOn!=null">and a.处理时间 = #{handleOn}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="unit!=null &amp;&amp; unit!=''">and a.单位 = #{unit}</when></choose>
+			<choose><when test="num!=null">and a.数量 = #{num}</when></choose>
+			<choose><when test="estimate!=null">and a.估价 = #{estimate}</when></choose>
+			<choose><when test="currentStatus!=null">and a.现状 = #{currentStatus}</when></choose>
+			<choose><when test="handleValue!=null">and a.价值 = #{handleValue}</when></choose>
+			<choose><when test="handleBy!=null &amp;&amp; handleBy!=''">and a.处理人 = #{handleBy}</when></choose>
+			<choose><when test="handleOn!=null">and a.处理时间 = #{handleOn}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 like '%${loanContractNum}%'</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 like '%${name}%'</when></choose>
+			<choose><when test="unit!=null &amp;&amp; unit!=''">and a.单位 like '%${unit}%'</when></choose>
+			<choose><when test="num!=null">and a.数量 = #{num}</when></choose>
+			<choose><when test="estimate!=null">and a.估价 = #{estimate}</when></choose>
+			<choose><when test="currentStatus!=null">and a.现状 = #{currentStatus}</when></choose>
+			<choose><when test="handleValue!=null">and a.价值 = #{handleValue}</when></choose>
+			<choose><when test="handleBy!=null &amp;&amp; handleBy!=''">and a.处理人 like '%${handleBy}%'</when></choose>
+			<choose><when test="handleOn!=null">and a.处理时间 = #{handleOn}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 like '%${remark}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 like '%${updateBy}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

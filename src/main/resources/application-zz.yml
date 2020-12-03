@@ -1,0 +1,98 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /csms
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  datasource:
+    dynamic:
+      primary: db1
+      datasource:
+        db2:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://172.26.53.114:3306/hb_csms?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT&allowPublicKeyRetrieval=true
+          username: root
+          password: hb234@#$
+          # 下面为连接池的补充设置，应用到上面所有数据源中
+          # 初始化大小，最小，最大
+          initialSize: 5
+          minIdle: 1
+          maxActive: 50
+          # 配置获取连接等待超时的时间
+          maxWait: 60000
+          # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+          timeBetweenEvictionRunsMillis: 60000
+          # 配置一个连接在池中最小生存的时间，单位是毫秒
+          minEvictableIdleTimeMillis: 300000
+          validationQuery: SELECT 1
+          testWhileIdle: true
+          testOnBorrow: false
+          testOnReturn: false
+          # 打开PSCache，并且指定每个连接上PSCache的大小
+          poolPreparedStatements: false
+          #spring.datasource.maxPoolPreparedStatementPerConnectionSize=20
+          # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+          filters: stat,wall,log4j
+          # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+          connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+          # 合并多个DruidDataSource的监控数据
+          #spring.datasource.useGlobalDataSourceStat=true
+        db1:
+          driver-class-name: net.sourceforge.jtds.jdbc.Driver
+          url: jdbc:jtds:sqlserver://10.0.0.42:1433/hb_csms;useLOBs=false
+          username: sa
+          password: hbsoft234@#$
+          # 下面为连接池的补充设置，应用到上面所有数据源中
+          # 初始化大小，最小，最大
+          initialSize: 5
+          minIdle: 1
+          maxActive: 50
+          # 配置获取连接等待超时的时间
+          maxWait: 60000
+          # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+          timeBetweenEvictionRunsMillis: 60000
+          # 配置一个连接在池中最小生存的时间，单位是毫秒
+          minEvictableIdleTimeMillis: 300000
+          validationQuery: SELECT 1
+          testWhileIdle: true
+          testOnBorrow: false
+          testOnReturn: false
+          # 打开PSCache，并且指定每个连接上PSCache的大小
+          poolPreparedStatements: false
+          #spring.datasource.maxPoolPreparedStatementPerConnectionSize=20
+          # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+          filters: stat,wall,log4j
+          # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+          connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+          # 合并多个DruidDataSource的监控数据
+          #spring.datasource.useGlobalDataSourceStat=true
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/config/config.xml
+  type-aliases-package: com.hb.bean;com.hbsoft.bean;com.hbsoft.bean.customers
+hb:
+  ###### 资源库名称
+  resourcesName: hb_csms
+  path: http://jf.czzrcb.com
+  dept: 401308
+  loginRequired: false
+  hbsoftKey: hbsoftkey123
+  getLoginInfo: http://jf.czzrcb.com/thirdPartyLogin
+  projectName: /csms
+  taskFlag: false
+  uploadPath: csms/
+  loan_dept: '001001'
+  dingDing:
+    corpId: ding721efb756aa874ba
+    agentId: 839614401
+    appKey: ding8uqbhb8xplzdbjka
+    appSecret: Nns-qyJNhl2l44gBQaDAVTuV5pSJIfd7DUBoyhsWC60aaAeD3TOPtJ0rvNMMxnMF
+    key: a17aba5bbacfa2a4c2f6d44f03c9c0fa
+    ddUrl: http://ttdiis.czzrcb.com/dingding/czzrcb/ttd/websrv.asp
+  dingMessage:
+    picUrl:
+    messageUrl:

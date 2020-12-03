@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.DingDingUserInfoDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_dd_user
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		userid,unionid,mobile,tel,workPlace,remark,isAdminIn,isBossIn,isHideIn,isLeaderIn,name,activeIn,position,email,avatar,jobnumber,deptId,deptName
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(userid) userid,RTRIM(unionid) unionid,RTRIM(mobile) mobile,RTRIM(tel) tel,RTRIM(workPlace) workPlace,RTRIM(remark) remark,isAdminIn,isBossIn,isHideIn,isLeaderIn,RTRIM(name) name,activeIn,RTRIM(position) position,RTRIM(email) email,RTRIM(avatar) avatar,RTRIM(jobnumber) jobnumber,deptId,RTRIM(deptName) deptName
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.userid) userid,RTRIM(a.unionid) unionid,RTRIM(a.mobile) mobile,RTRIM(a.tel) tel,RTRIM(a.workPlace) workPlace,RTRIM(a.remark) remark,a.isAdminIn,a.isBossIn,a.isHideIn,a.isLeaderIn,RTRIM(a.name) name,a.activeIn,RTRIM(a.position) position,RTRIM(a.email) email,RTRIM(a.avatar) avatar,RTRIM(a.jobnumber) jobnumber,a.deptId,RTRIM(a.deptName) deptName
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.dingding.bean.DingDingUserInfo">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="userid" column="userid" />
+		<result property="unionid" column="unionid" />
+		<result property="mobile" column="mobile" />
+		<result property="tel" column="tel" />
+		<result property="workPlace" column="workPlace" />
+		<result property="remark" column="remark" />
+		<result property="isAdminIn" column="isAdminIn" />
+		<result property="isBossIn" column="isBossIn" />
+		<result property="isHideIn" column="isHideIn" />
+		<result property="isLeaderIn" column="isLeaderIn" />
+		<result property="name" column="name" />
+		<result property="activeIn" column="activeIn" />
+		<result property="position" column="position" />
+		<result property="email" column="email" />
+		<result property="avatar" column="avatar" />
+		<result property="jobnumber" column="jobnumber" />
+		<result property="deptId" column="deptId" />
+		<result property="deptName" column="deptName" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{userid},#{unionid},#{mobile},#{tel},#{workPlace},#{remark},#{isAdminIn},#{isBossIn},#{isHideIn},#{isLeaderIn},#{name},#{activeIn},#{position},#{email},#{avatar},#{jobnumber},#{deptId},#{deptName})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{userid},#{unionid},#{mobile},#{tel},#{workPlace},#{remark},#{isAdminIn},#{isBossIn},#{isHideIn},#{isLeaderIn},#{name},#{activeIn},#{position},#{email},#{avatar},#{jobnumber},#{deptId},#{deptName})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.userid},#{item.unionid},#{item.mobile},#{item.tel},#{item.workPlace},#{item.remark},#{item.isAdminIn},#{item.isBossIn},#{item.isHideIn},#{item.isLeaderIn},#{item.name},#{item.activeIn},#{item.position},#{item.email},#{item.avatar},#{item.jobnumber},#{item.deptId},#{item.deptName})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="userid!=null">and userid = #{userid}</when></choose>
+			<choose><when test="unionid!=null">and unionid = #{unionid}</when></choose>
+			<choose><when test="mobile!=null">and mobile = #{mobile}</when></choose>
+			<choose><when test="tel!=null">and tel = #{tel}</when></choose>
+			<choose><when test="workPlace!=null">and workPlace = #{workPlace}</when></choose>
+			<choose><when test="remark!=null">and remark = #{remark}</when></choose>
+			<choose><when test="isAdminIn!=null">and isAdminIn = #{isAdminIn}</when></choose>
+			<choose><when test="isBossIn!=null">and isBossIn = #{isBossIn}</when></choose>
+			<choose><when test="isHideIn!=null">and isHideIn = #{isHideIn}</when></choose>
+			<choose><when test="isLeaderIn!=null">and isLeaderIn = #{isLeaderIn}</when></choose>
+			<choose><when test="name!=null">and name = #{name}</when></choose>
+			<choose><when test="activeIn!=null">and activeIn = #{activeIn}</when></choose>
+			<choose><when test="position!=null">and position = #{position}</when></choose>
+			<choose><when test="email!=null">and email = #{email}</when></choose>
+			<choose><when test="avatar!=null">and avatar = #{avatar}</when></choose>
+			<choose><when test="jobnumber!=null">and jobnumber = #{jobnumber}</when></choose>
+			<choose><when test="deptId!=null">and deptId = #{deptId}</when></choose>
+			<choose><when test="deptName!=null">and deptName = #{deptName}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="userid!=null">userid = #{userid},</if> 
+		<if test="unionid!=null">unionid = #{unionid},</if> 
+		<if test="mobile!=null">mobile = #{mobile},</if> 
+		<if test="tel!=null">tel = #{tel},</if> 
+		<if test="workPlace!=null">workPlace = #{workPlace},</if> 
+		<if test="remark!=null">remark = #{remark},</if> 
+		<if test="isAdminIn!=null">isAdminIn = #{isAdminIn},</if> 
+		<if test="isBossIn!=null">isBossIn = #{isBossIn},</if> 
+		<if test="isHideIn!=null">isHideIn = #{isHideIn},</if> 
+		<if test="isLeaderIn!=null">isLeaderIn = #{isLeaderIn},</if> 
+		<if test="name!=null">name = #{name},</if> 
+		<if test="activeIn!=null">activeIn = #{activeIn},</if> 
+		<if test="position!=null">position = #{position},</if> 
+		<if test="email!=null">email = #{email},</if> 
+		<if test="avatar!=null">avatar = #{avatar},</if> 
+		<if test="jobnumber!=null">jobnumber = #{jobnumber},</if> 
+		<if test="deptId!=null">deptId = #{deptId},</if> 
+		<if test="deptName!=null">deptName = #{deptName},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="userid!=null">userid = NULL,</if>
+		<if test="unionid!=null">unionid = NULL,</if>
+		<if test="mobile!=null">mobile = NULL,</if>
+		<if test="tel!=null">tel = NULL,</if>
+		<if test="workPlace!=null">workPlace = NULL,</if>
+		<if test="remark!=null">remark = NULL,</if>
+		<if test="isAdminIn!=null">isAdminIn = NULL,</if>
+		<if test="isBossIn!=null">isBossIn = NULL,</if>
+		<if test="isHideIn!=null">isHideIn = NULL,</if>
+		<if test="isLeaderIn!=null">isLeaderIn = NULL,</if>
+		<if test="name!=null">name = NULL,</if>
+		<if test="activeIn!=null">activeIn = NULL,</if>
+		<if test="position!=null">position = NULL,</if>
+		<if test="email!=null">email = NULL,</if>
+		<if test="avatar!=null">avatar = NULL,</if>
+		<if test="jobnumber!=null">jobnumber = NULL,</if>
+		<if test="deptId!=null">deptId = NULL,</if>
+		<if test="deptName!=null">deptName = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="userid!=null &amp;&amp; userid!=''">and a.userid = #{userid}</when></choose>
+			<choose><when test="unionid!=null &amp;&amp; unionid!=''">and a.unionid = #{unionid}</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.mobile = #{mobile}</when></choose>
+			<choose><when test="tel!=null &amp;&amp; tel!=''">and a.tel = #{tel}</when></choose>
+			<choose><when test="workPlace!=null &amp;&amp; workPlace!=''">and a.workPlace = #{workPlace}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.remark = #{remark}</when></choose>
+			<choose><when test="isAdminIn!=null">and a.isAdminIn = #{isAdminIn}</when></choose>
+			<choose><when test="isBossIn!=null">and a.isBossIn = #{isBossIn}</when></choose>
+			<choose><when test="isHideIn!=null">and a.isHideIn = #{isHideIn}</when></choose>
+			<choose><when test="isLeaderIn!=null">and a.isLeaderIn = #{isLeaderIn}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.name = #{name}</when></choose>
+			<choose><when test="activeIn!=null">and a.activeIn = #{activeIn}</when></choose>
+			<choose><when test="position!=null &amp;&amp; position!=''">and a.position = #{position}</when></choose>
+			<choose><when test="email!=null &amp;&amp; email!=''">and a.email = #{email}</when></choose>
+			<choose><when test="avatar!=null &amp;&amp; avatar!=''">and a.avatar = #{avatar}</when></choose>
+			<choose><when test="jobnumber!=null &amp;&amp; jobnumber!=''">and a.jobnumber = #{jobnumber}</when></choose>
+			<choose><when test="deptId!=null">and a.deptId = #{deptId}</when></choose>
+			<choose><when test="deptName!=null &amp;&amp; deptName!=''">and a.deptName = #{deptName}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="userid!=null &amp;&amp; userid!=''">and a.userid = #{userid}</when></choose>
+			<choose><when test="unionid!=null &amp;&amp; unionid!=''">and a.unionid = #{unionid}</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.mobile = #{mobile}</when></choose>
+			<choose><when test="tel!=null &amp;&amp; tel!=''">and a.tel = #{tel}</when></choose>
+			<choose><when test="workPlace!=null &amp;&amp; workPlace!=''">and a.workPlace = #{workPlace}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.remark = #{remark}</when></choose>
+			<choose><when test="isAdminIn!=null">and a.isAdminIn = #{isAdminIn}</when></choose>
+			<choose><when test="isBossIn!=null">and a.isBossIn = #{isBossIn}</when></choose>
+			<choose><when test="isHideIn!=null">and a.isHideIn = #{isHideIn}</when></choose>
+			<choose><when test="isLeaderIn!=null">and a.isLeaderIn = #{isLeaderIn}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.name = #{name}</when></choose>
+			<choose><when test="activeIn!=null">and a.activeIn = #{activeIn}</when></choose>
+			<choose><when test="position!=null &amp;&amp; position!=''">and a.position = #{position}</when></choose>
+			<choose><when test="email!=null &amp;&amp; email!=''">and a.email = #{email}</when></choose>
+			<choose><when test="avatar!=null &amp;&amp; avatar!=''">and a.avatar = #{avatar}</when></choose>
+			<choose><when test="jobnumber!=null &amp;&amp; jobnumber!=''">and a.jobnumber = #{jobnumber}</when></choose>
+			<choose><when test="deptId!=null">and a.deptId = #{deptId}</when></choose>
+			<choose><when test="deptName!=null &amp;&amp; deptName!=''">and a.deptName = #{deptName}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="userid!=null &amp;&amp; userid!=''">and a.userid like '%${userid}%'</when></choose>
+			<choose><when test="unionid!=null &amp;&amp; unionid!=''">and a.unionid like '%${unionid}%'</when></choose>
+			<choose><when test="mobile!=null &amp;&amp; mobile!=''">and a.mobile like '%${mobile}%'</when></choose>
+			<choose><when test="tel!=null &amp;&amp; tel!=''">and a.tel like '%${tel}%'</when></choose>
+			<choose><when test="workPlace!=null &amp;&amp; workPlace!=''">and a.workPlace like '%${workPlace}%'</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.remark like '%${remark}%'</when></choose>
+			<choose><when test="isAdminIn!=null">and a.isAdminIn = #{isAdminIn}</when></choose>
+			<choose><when test="isBossIn!=null">and a.isBossIn = #{isBossIn}</when></choose>
+			<choose><when test="isHideIn!=null">and a.isHideIn = #{isHideIn}</when></choose>
+			<choose><when test="isLeaderIn!=null">and a.isLeaderIn = #{isLeaderIn}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.name like '%${name}%'</when></choose>
+			<choose><when test="activeIn!=null">and a.activeIn = #{activeIn}</when></choose>
+			<choose><when test="position!=null &amp;&amp; position!=''">and a.position like '%${position}%'</when></choose>
+			<choose><when test="email!=null &amp;&amp; email!=''">and a.email like '%${email}%'</when></choose>
+			<choose><when test="avatar!=null &amp;&amp; avatar!=''">and a.avatar like '%${avatar}%'</when></choose>
+			<choose><when test="jobnumber!=null &amp;&amp; jobnumber!=''">and a.jobnumber like '%${jobnumber}%'</when></choose>
+			<choose><when test="deptId!=null">and a.deptId = #{deptId}</when></choose>
+			<choose><when test="deptName!=null &amp;&amp; deptName!=''">and a.deptName like '%${deptName}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

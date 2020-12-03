@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.DdsendmessageBeanDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_ddsendmessage
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		接收人,业务id,业务类型,内容,创建时间,创建者
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(接收人) 接收人,RTRIM(业务id) 业务id,RTRIM(业务类型) 业务类型,RTRIM(内容) 内容,创建时间,RTRIM(创建者) 创建者
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.接收人) 接收人,RTRIM(a.业务id) 业务id,RTRIM(a.业务类型) 业务类型,RTRIM(a.内容) 内容,a.创建时间,RTRIM(a.创建者) 创建者
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.DdsendmessageBean">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="accepter" column="接收人" />
+		<result property="businessId" column="业务id" />
+		<result property="businessType" column="业务类型" />
+		<result property="content" column="内容" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{accepter},#{businessId},#{businessType},#{content},#{createOn},#{createBy})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{accepter},#{businessId},#{businessType},#{content},#{createOn},#{createBy})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.accepter},#{item.businessId},#{item.businessType},#{item.content},#{item.createOn},#{item.createBy})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="accepter!=null">and 接收人 = #{accepter}</when></choose>
+			<choose><when test="businessId!=null">and 业务id = #{businessId}</when></choose>
+			<choose><when test="businessType!=null">and 业务类型 = #{businessType}</when></choose>
+			<choose><when test="content!=null">and 内容 = #{content}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="accepter!=null">接收人 = #{accepter},</if> 
+		<if test="businessId!=null">业务id = #{businessId},</if> 
+		<if test="businessType!=null">业务类型 = #{businessType},</if> 
+		<if test="content!=null">内容 = #{content},</if> 
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="accepter!=null">接收人 = NULL,</if>
+		<if test="businessId!=null">业务id = NULL,</if>
+		<if test="businessType!=null">业务类型 = NULL,</if>
+		<if test="content!=null">内容 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="accepter!=null &amp;&amp; accepter!=''">and a.接收人 = #{accepter}</when></choose>
+			<choose><when test="businessId!=null &amp;&amp; businessId!=''">and a.业务id = #{businessId}</when></choose>
+			<choose><when test="businessType!=null &amp;&amp; businessType!=''">and a.业务类型 = #{businessType}</when></choose>
+			<choose><when test="content!=null &amp;&amp; content!=''">and a.内容 = #{content}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="accepter!=null &amp;&amp; accepter!=''">and a.接收人 = #{accepter}</when></choose>
+			<choose><when test="businessId!=null &amp;&amp; businessId!=''">and a.业务id = #{businessId}</when></choose>
+			<choose><when test="businessType!=null &amp;&amp; businessType!=''">and a.业务类型 = #{businessType}</when></choose>
+			<choose><when test="content!=null &amp;&amp; content!=''">and a.内容 = #{content}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="accepter!=null &amp;&amp; accepter!=''">and a.接收人 like '%${accepter}%'</when></choose>
+			<choose><when test="businessId!=null &amp;&amp; businessId!=''">and a.业务id like '%${businessId}%'</when></choose>
+			<choose><when test="businessType!=null &amp;&amp; businessType!=''">and a.业务类型 like '%${businessType}%'</when></choose>
+			<choose><when test="content!=null &amp;&amp; content!=''">and a.内容 like '%${content}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

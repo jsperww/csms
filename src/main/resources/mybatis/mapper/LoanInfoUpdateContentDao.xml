@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanInfoUpdateContentDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_loan_info_update
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		贷款合同号,日志id,原始内容,修改内容
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(贷款合同号) 贷款合同号,RTRIM(日志id) 日志id,RTRIM(原始内容) 原始内容,RTRIM(修改内容) 修改内容
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.贷款合同号) 贷款合同号,RTRIM(a.日志id) 日志id,RTRIM(a.原始内容) 原始内容,RTRIM(a.修改内容) 修改内容
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanInfoUpdateContent">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="logId" column="日志id" />
+		<result property="oldContent" column="原始内容" />
+		<result property="updateContent" column="修改内容" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{logId},#{oldContent},#{updateContent})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{logId},#{oldContent},#{updateContent})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.loanContractNum},#{item.logId},#{item.oldContent},#{item.updateContent})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null">and 贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="logId!=null">and 日志id = #{logId}</when></choose>
+			<choose><when test="oldContent!=null">and 原始内容 = #{oldContent}</when></choose>
+			<choose><when test="updateContent!=null">and 修改内容 = #{updateContent}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = #{loanContractNum},</if> 
+		<if test="logId!=null">日志id = #{logId},</if> 
+		<if test="oldContent!=null">原始内容 = #{oldContent},</if> 
+		<if test="updateContent!=null">修改内容 = #{updateContent},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = NULL,</if>
+		<if test="logId!=null">日志id = NULL,</if>
+		<if test="oldContent!=null">原始内容 = NULL,</if>
+		<if test="updateContent!=null">修改内容 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="logId!=null &amp;&amp; logId!=''">and a.日志id = #{logId}</when></choose>
+			<choose><when test="oldContent!=null &amp;&amp; oldContent!=''">and a.原始内容 = #{oldContent}</when></choose>
+			<choose><when test="updateContent!=null &amp;&amp; updateContent!=''">and a.修改内容 = #{updateContent}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="logId!=null &amp;&amp; logId!=''">and a.日志id = #{logId}</when></choose>
+			<choose><when test="oldContent!=null &amp;&amp; oldContent!=''">and a.原始内容 = #{oldContent}</when></choose>
+			<choose><when test="updateContent!=null &amp;&amp; updateContent!=''">and a.修改内容 = #{updateContent}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 like '%${loanContractNum}%'</when></choose>
+			<choose><when test="logId!=null &amp;&amp; logId!=''">and a.日志id like '%${logId}%'</when></choose>
+			<choose><when test="oldContent!=null &amp;&amp; oldContent!=''">and a.原始内容 like '%${oldContent}%'</when></choose>
+			<choose><when test="updateContent!=null &amp;&amp; updateContent!=''">and a.修改内容 like '%${updateContent}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

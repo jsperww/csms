@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.IndictmentInfoDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_indictment_info
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		贷款合同号,上诉人,被告人,律师,法院地区,法院,诉讼费用,执行费用,调解标识,开庭标识,执行标识,备注,创建时间,创建者,修改时间,修改者
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(贷款合同号) 贷款合同号,RTRIM(上诉人) 上诉人,RTRIM(被告人) 被告人,RTRIM(律师) 律师,RTRIM(法院地区) 法院地区,RTRIM(法院) 法院,诉讼费用,执行费用,RTRIM(调解标识) 调解标识,RTRIM(开庭标识) 开庭标识,RTRIM(执行标识) 执行标识,RTRIM(备注) 备注,创建时间,RTRIM(创建者) 创建者,修改时间,RTRIM(修改者) 修改者
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.贷款合同号) 贷款合同号,RTRIM(a.上诉人) 上诉人,RTRIM(a.被告人) 被告人,RTRIM(a.律师) 律师,RTRIM(a.法院地区) 法院地区,RTRIM(a.法院) 法院,a.诉讼费用,a.执行费用,RTRIM(a.调解标识) 调解标识,RTRIM(a.开庭标识) 开庭标识,RTRIM(a.执行标识) 执行标识,RTRIM(a.备注) 备注,a.创建时间,RTRIM(a.创建者) 创建者,a.修改时间,RTRIM(a.修改者) 修改者
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.IndictmentInfo">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="loanContractNum" column="贷款合同号" />
+		<result property="appellor" column="上诉人" />
+		<result property="accusedPerson" column="被告人" />
+		<result property="lawyer" column="律师" />
+		<result property="courtArea" column="法院地区" />
+		<result property="court" column="法院" />
+		<result property="courtCost" column="诉讼费用" />
+		<result property="executionCost" column="执行费用" />
+		<result property="mediationFlag" column="调解标识" />
+		<result property="courtFlag" column="开庭标识" />
+		<result property="executionFlag" column="执行标识" />
+		<result property="remark" column="备注" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+		<result property="updateOn" column="修改时间" />
+		<result property="updateBy" column="修改者" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{appellor},#{accusedPerson},#{lawyer},#{courtArea},#{court},#{courtCost},#{executionCost},#{mediationFlag},#{courtFlag},#{executionFlag},#{remark},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{loanContractNum},#{appellor},#{accusedPerson},#{lawyer},#{courtArea},#{court},#{courtCost},#{executionCost},#{mediationFlag},#{courtFlag},#{executionFlag},#{remark},#{createOn},#{createBy},#{updateOn},#{updateBy})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{#{item.loanContractNum},#{item.appellor},#{item.accusedPerson},#{item.lawyer},#{item.courtArea},#{item.court},#{item.courtCost},#{item.executionCost},#{item.mediationFlag},#{item.courtFlag},#{item.executionFlag},#{item.remark},#{item.createOn},#{item.createBy},#{item.updateOn},#{item.updateBy})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null">and 贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="appellor!=null">and 上诉人 = #{appellor}</when></choose>
+			<choose><when test="accusedPerson!=null">and 被告人 = #{accusedPerson}</when></choose>
+			<choose><when test="lawyer!=null">and 律师 = #{lawyer}</when></choose>
+			<choose><when test="courtArea!=null">and 法院地区 = #{courtArea}</when></choose>
+			<choose><when test="court!=null">and 法院 = #{court}</when></choose>
+			<choose><when test="courtCost!=null">and 诉讼费用 = #{courtCost}</when></choose>
+			<choose><when test="executionCost!=null">and 执行费用 = #{executionCost}</when></choose>
+			<choose><when test="mediationFlag!=null">and 调解标识 = #{mediationFlag}</when></choose>
+			<choose><when test="courtFlag!=null">and 开庭标识 = #{courtFlag}</when></choose>
+			<choose><when test="executionFlag!=null">and 执行标识 = #{executionFlag}</when></choose>
+			<choose><when test="remark!=null">and 备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and 修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null">and 修改者 = #{updateBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = #{loanContractNum},</if>
+		<if test="appellor!=null">上诉人 = #{appellor},</if>
+		<if test="accusedPerson!=null">被告人 = #{accusedPerson},</if> 
+		<if test="lawyer!=null">律师 = #{lawyer},</if> 
+		<if test="courtArea!=null">法院地区 = #{courtArea},</if> 
+		<if test="court!=null">法院 = #{court},</if> 
+		<if test="courtCost!=null">诉讼费用 = #{courtCost},</if> 
+		<if test="executionCost!=null">执行费用 = #{executionCost},</if> 
+		<if test="mediationFlag!=null">调解标识 = #{mediationFlag},</if> 
+		<if test="courtFlag!=null">开庭标识 = #{courtFlag},</if> 
+		<if test="executionFlag!=null">执行标识 = #{executionFlag},</if> 
+		<if test="remark!=null">备注 = #{remark},</if> 
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		<if test="updateOn!=null">修改时间 = #{updateOn},</if> 
+		<if test="updateBy!=null">修改者 = #{updateBy},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="loanContractNum!=null">贷款合同号 = NULL,</if>
+		<if test="appellor!=null">上诉人 = NULL,</if>
+		<if test="accusedPerson!=null">被告人 = NULL,</if>
+		<if test="lawyer!=null">律师 = NULL,</if>
+		<if test="courtArea!=null">法院地区 = NULL,</if>
+		<if test="court!=null">法院 = NULL,</if>
+		<if test="courtCost!=null">诉讼费用 = NULL,</if>
+		<if test="executionCost!=null">执行费用 = NULL,</if>
+		<if test="mediationFlag!=null">调解标识 = NULL,</if>
+		<if test="courtFlag!=null">开庭标识 = NULL,</if>
+		<if test="executionFlag!=null">执行标识 = NULL,</if>
+		<if test="remark!=null">备注 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		<if test="updateOn!=null">修改时间 = NULL,</if>
+		<if test="updateBy!=null">修改者 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="appellor!=null &amp;&amp; appellor!=''">and a.上诉人 = #{appellor}</when></choose>
+			<choose><when test="accusedPerson!=null &amp;&amp; accusedPerson!=''">and a.被告人 = #{accusedPerson}</when></choose>
+			<choose><when test="lawyer!=null &amp;&amp; lawyer!=''">and a.律师 = #{lawyer}</when></choose>
+			<choose><when test="courtArea!=null &amp;&amp; courtArea!=''">and a.法院地区 = #{courtArea}</when></choose>
+			<choose><when test="court!=null &amp;&amp; court!=''">and a.法院 = #{court}</when></choose>
+			<choose><when test="courtCost!=null">and a.诉讼费用 = #{courtCost}</when></choose>
+			<choose><when test="executionCost!=null">and a.执行费用 = #{executionCost}</when></choose>
+			<choose><when test="mediationFlag!=null &amp;&amp; mediationFlag!=''">and a.调解标识 = #{mediationFlag}</when></choose>
+			<choose><when test="courtFlag!=null &amp;&amp; courtFlag!=''">and a.开庭标识 = #{courtFlag}</when></choose>
+			<choose><when test="executionFlag!=null &amp;&amp; executionFlag!=''">and a.执行标识 = #{executionFlag}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 = #{loanContractNum}</when></choose>
+			<choose><when test="appellor!=null &amp;&amp; appellor!=''">and a.上诉人 = #{appellor}</when></choose>
+			<choose><when test="accusedPerson!=null &amp;&amp; accusedPerson!=''">and a.被告人 = #{accusedPerson}</when></choose>
+			<choose><when test="lawyer!=null &amp;&amp; lawyer!=''">and a.律师 = #{lawyer}</when></choose>
+			<choose><when test="courtArea!=null &amp;&amp; courtArea!=''">and a.法院地区 = #{courtArea}</when></choose>
+			<choose><when test="court!=null &amp;&amp; court!=''">and a.法院 = #{court}</when></choose>
+			<choose><when test="courtCost!=null">and a.诉讼费用 = #{courtCost}</when></choose>
+			<choose><when test="executionCost!=null">and a.执行费用 = #{executionCost}</when></choose>
+			<choose><when test="mediationFlag!=null &amp;&amp; mediationFlag!=''">and a.调解标识 = #{mediationFlag}</when></choose>
+			<choose><when test="courtFlag!=null &amp;&amp; courtFlag!=''">and a.开庭标识 = #{courtFlag}</when></choose>
+			<choose><when test="executionFlag!=null &amp;&amp; executionFlag!=''">and a.执行标识 = #{executionFlag}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 = #{updateBy}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="loanContractNum!=null &amp;&amp; loanContractNum!=''">and a.贷款合同号 like '%${loanContractNum}%'</when></choose>
+			<choose><when test="appellor!=null &amp;&amp; appellor!=''">and a.上诉人 like '%${appellor}%'</when></choose>
+			<choose><when test="accusedPerson!=null &amp;&amp; accusedPerson!=''">and a.被告人 like '%${accusedPerson}%'</when></choose>
+			<choose><when test="lawyer!=null &amp;&amp; lawyer!=''">and a.律师 like '%${lawyer}%'</when></choose>
+			<choose><when test="courtArea!=null &amp;&amp; courtArea!=''">and a.法院地区 like '%${courtArea}%'</when></choose>
+			<choose><when test="court!=null &amp;&amp; court!=''">and a.法院 like '%${court}%'</when></choose>
+			<choose><when test="courtCost!=null">and a.诉讼费用 = #{courtCost}</when></choose>
+			<choose><when test="executionCost!=null">and a.执行费用 = #{executionCost}</when></choose>
+			<choose><when test="mediationFlag!=null &amp;&amp; mediationFlag!=''">and a.调解标识 like '%${mediationFlag}%'</when></choose>
+			<choose><when test="courtFlag!=null &amp;&amp; courtFlag!=''">and a.开庭标识 like '%${courtFlag}%'</when></choose>
+			<choose><when test="executionFlag!=null &amp;&amp; executionFlag!=''">and a.执行标识 like '%${executionFlag}%'</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 like '%${remark}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			<choose><when test="updateOn!=null">and a.修改时间 = #{updateOn}</when></choose>
+			<choose><when test="updateBy!=null &amp;&amp; updateBy!=''">and a.修改者 like '%${updateBy}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findPagingDataByLoanCon" resultMap="com.hbsoft.csms.dao.LoanInfoBeanDao.resultMap" >
+		select RTRIM(证件号码) 证件号码,RTRIM(证件类型) 证件类型,RTRIM(名称) 名称,Convert(decimal(18,2),首贷金额) 首贷金额,Convert(decimal(18,2),结欠本金) 结欠本金,Convert(decimal(18,2),结欠利息) 结欠利息,Convert(decimal(18,2),核销时欠息) 核销时欠息,Convert(decimal(18,2),表外欠息) 表外欠息,
+		id_prikey,贷款合同号,numberName,distributeFlag,idTypeName,借款日期,到期日期,numberType,number,managerName,执行利率,villageName,orgName,贷款类型
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="com.hbsoft.csms.dao.LoanInfoBeanDao.fieldTrimAll2" />,j.id_prikey,isnull(c.描述,d.单位名称) numberName,case when b.贷款合同号 is null then 1 else 2 end distributeFlag,b.编号类型 numberType,b.编号 number
+		, RTRIM(e.项目)idTypeName, isnull(RTRIM(f.描述),'')managerName, RTRIM(g.项目)villageName, RTRIM(h.项目)orgName  from
+		<include refid="tableName" /> j
+		left join k_loan_info a on j.贷款合同号 = a.贷款合同号
+		left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+		left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+		left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+		left join d_idType e on a.证件类型 = e.代码
+		left join hbcm.._USER f on b.负责人 = f.名称
+		left join d_area g on a.村 = g.代码
+		left join d_org h on a.所属机构 = h.代码
+		<include refid="com.hbsoft.csms.dao.LoanInfoBeanDao.pagingWhere" />
+		where a.贷款合同号 in (select 贷款合同号 from k_indictment_info)
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findPagingCountByLoanCon" resultType="Integer" >
+		select count(*) _row from
+		<include refid="tableName" /> j
+		left join k_loan_info a on j.贷款合同号 = a.贷款合同号
+		left join k_loan_distribute b on a.贷款合同号 = b.贷款合同号
+		left join hbcm.._USER c on b.编号 = c.名称 and b.编号类型 = '1'
+		left join hbcm.._dept d on b.编号 = d.单位代码  and b.编号类型 = '2'
+		left join d_idType e on a.证件类型 = e.代码
+		left join hbcm.._USER f on b.负责人 = f.名称
+		left join d_area g on a.村 = g.代码
+		left join d_org h on a.所属机构 = h.代码
+		<include refid="com.hbsoft.csms.dao.LoanInfoBeanDao.pagingWhere" />
+		where a.贷款合同号 in (select 贷款合同号 from k_indictment_info)
+	</select>
+</mapper>

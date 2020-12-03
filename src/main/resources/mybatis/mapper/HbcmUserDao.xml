@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.HbcmUserDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		hbcm.._user
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		名称,密码
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(名称) 名称,RTRIM(密码) 密码
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.名称) 名称,RTRIM(a.密码) 密码
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.HbcmUser">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="name" column="名称" />
+		<result property="password" column="密码" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{name},#{password})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{name},#{password})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.name},#{item.password})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="name!=null">and 名称 = #{name}</when></choose>
+			<choose><when test="password!=null">and 密码 = #{password}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="name!=null">名称 = #{name},</if> 
+		<if test="password!=null">密码 = #{password},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="name!=null">名称 = NULL,</if>
+		<if test="password!=null">密码 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="password!=null &amp;&amp; password!=''">and a.密码 = #{password}</when></choose>
+			
+		</where>
+	</select>
+
+	<select id="findViewByUserId" resultType="string">
+		select
+		RTRIM(a.负责人)  manager
+		from
+		hbcm.._DEPT a
+		where a.单位代码 = #{deptId}
+
+	</select>
+
+
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 = #{name}</when></choose>
+			<choose><when test="password!=null &amp;&amp; password!=''">and a.密码 = #{password}</when></choose>
+			
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="name!=null &amp;&amp; name!=''">and a.名称 like '%${name}%'</when></choose>
+			<choose><when test="password!=null &amp;&amp; password!=''">and a.密码 like '%${password}%'</when></choose>
+			
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey
+		from
+		<include refid="tableName" /> a
+		
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+
+	<select id="findDeptMananger" resultType="map">
+		  select d.负责人 manager from hbcm.._USER u left join hbcm.._DEPT d on u.部门单位 = d.单位代码 where u.名称 = #{userId}
+	</select>
+
+	<select id="findDeptByDeptName" resultType="map">
+		select 单位代码 deptCode from hbcm.._DEPT d  where 单位名称 = #{deptName}
+	</select>
+	
+</mapper>

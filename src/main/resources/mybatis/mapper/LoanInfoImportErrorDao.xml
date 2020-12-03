@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.LoanInfoImportErrorDao">
+	<!-- 表名 -->
+	<sql id="tableName">
+		k_loan_info_import_error
+	</sql>
+	<!-- 字段名 -->
+	<sql id="fieldAll">
+		证件号码,贷款账号,导入状态,备注,创建时间,创建者
+	</sql>
+	<!-- 字段名去空 -->
+	<sql id="fieldTrimAll">
+		RTRIM(证件号码) 证件号码,RTRIM(贷款账号) 贷款账号,RTRIM(导入状态) 导入状态,RTRIM(备注) 备注,创建时间,RTRIM(创建者) 创建者
+	</sql>
+	<sql id="fieldTrimAll2">
+		RTRIM(a.证件号码) 证件号码,RTRIM(a.贷款账号) 贷款账号,RTRIM(a.导入状态) 导入状态,RTRIM(a.备注) 备注,a.创建时间,RTRIM(a.创建者) 创建者
+	</sql>
+	<resultMap id="resultMap" type="com.hbsoft.csms.bean.LoanInfoImportError">
+		<id property="id_prikey" column="id_prikey"/>
+		<result property="idNum" column="证件号码" />
+		<result property="loanAccountNum" column="贷款账号" />
+		<result property="importStatus" column="导入状态" />
+		<result property="remark" column="备注" />
+		<result property="createOn" column="创建时间" />
+		<result property="createBy" column="创建者" />
+	</resultMap>
+	<!-- 插入一条数据 -->
+	<insert id="insert">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{idNum},#{loanAccountNum},#{importStatus},#{remark},#{createOn},#{createBy})
+	</insert>
+	<!-- 插入一条数据返回主键,主键在传入的对象里面 -->
+	<insert id="insertPrikey">
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id_prikey">
+          SELECT @@IDENTITY
+      	</selectKey>
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values(#{idNum},#{loanAccountNum},#{importStatus},#{remark},#{createOn},#{createBy})
+	</insert>
+	<!-- 批量添加 -->
+	<insert id="insertBatch">
+		insert into
+		<include refid="tableName" />
+		(
+		<include refid="fieldAll" />
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.idNum},#{item.loanAccountNum},#{item.importStatus},#{item.remark},#{item.createOn},#{item.createBy})
+		</foreach>
+	</insert>
+	<!-- 按给定条件删除记录 -->
+	<delete id="delete">
+		delete
+		<include refid="tableName" />
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="idNum!=null">and 证件号码 = #{idNum}</when></choose>
+			<choose><when test="loanAccountNum!=null">and 贷款账号 = #{loanAccountNum}</when></choose>
+			<choose><when test="importStatus!=null">and 导入状态 = #{importStatus}</when></choose>
+			<choose><when test="remark!=null">and 备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and 创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null">and 创建者 = #{createBy}</when></choose>
+		</where>
+	</delete>
+	<!-- 按主键删除单条记录 -->
+	<delete id="deleteOne">
+		delete
+		<include refid="tableName" />
+		where id_prikey = #{id}
+	</delete>
+	<!-- 按主键删除多条记录 -->
+	<delete id="deleteBatch">
+		delete
+		<include refid="tableName" />
+		where id_prikey in
+		<choose>
+			<when test="ids!=null&amp;&amp;ids.size()>0">
+				<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				(0)
+			</otherwise>
+		</choose>
+	</delete>
+	<!-- 根据主键或者外键修改记录 -->
+	<update id="update">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="idNum!=null">证件号码 = #{idNum},</if> 
+		<if test="loanAccountNum!=null">贷款账号 = #{loanAccountNum},</if> 
+		<if test="importStatus!=null">导入状态 = #{importStatus},</if> 
+		<if test="remark!=null">备注 = #{remark},</if> 
+		<if test="createOn!=null">创建时间 = #{createOn},</if> 
+		<if test="createBy!=null">创建者 = #{createBy},</if> 
+		</trim>
+		<where>
+			<choose><when test="id_prikey!=null">and id_prikey = #{id_prikey}</when></choose>
+		</where>
+	</update>
+	<!-- 根据主键清空字段 -->
+	<update id="updateEmpty">
+		update
+		<include refid="tableName" />
+		<trim prefix="set" suffixOverrides=",">
+		<if test="idNum!=null">证件号码 = NULL,</if>
+		<if test="loanAccountNum!=null">贷款账号 = NULL,</if>
+		<if test="importStatus!=null">导入状态 = NULL,</if>
+		<if test="remark!=null">备注 = NULL,</if>
+		<if test="createOn!=null">创建时间 = NULL,</if>
+		<if test="createBy!=null">创建者 = NULL,</if>
+		</trim>
+		<where>
+			id_prikey = #{id_prikey}
+		</where>
+	</update>
+	<!-- 根据主键查询单条记录 -->
+	<select id="findById" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey,RTRIM(b.描述) createByName
+		from
+		<include refid="tableName" /> a
+		left join hbcm.._USER b on a.创建者 = b.名称
+		where a.id_prikey = #{id}
+	</select>
+	<!-- 根据传入字段查询单条记录 -->
+	<select id="findByField" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey,RTRIM(b.描述) createByName
+		from
+		<include refid="tableName" /> a
+		left join hbcm.._USER b on a.创建者 = b.名称
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 = #{idNum}</when></choose>
+			<choose><when test="loanAccountNum!=null &amp;&amp; loanAccountNum!=''">and a.贷款账号 = #{loanAccountNum}</when></choose>
+			<choose><when test="importStatus!=null &amp;&amp; importStatus!=''">and a.导入状态 = #{importStatus}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="createByName!=null &amp;&amp; createByName!=''">and b.描述 like '%${createByName}%'</when></choose>
+		</where>
+	</select>
+	<!-- 根据传入字段查询多条记录 -->
+	<select id="findAll" resultMap="resultMap">
+		select
+		<include refid="fieldTrimAll2" />,a.id_prikey,RTRIM(b.描述) createByName
+		from
+		<include refid="tableName" /> a
+		left join hbcm.._USER b on a.创建者 = b.名称
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 = #{idNum}</when></choose>
+			<choose><when test="loanAccountNum!=null &amp;&amp; loanAccountNum!=''">and a.贷款账号 = #{loanAccountNum}</when></choose>
+			<choose><when test="importStatus!=null &amp;&amp; importStatus!=''">and a.导入状态 = #{importStatus}</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 = #{remark}</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 = #{createBy}</when></choose>
+			<choose><when test="createByName!=null &amp;&amp; createByName!=''">and b.描述 like '%${createByName}%'</when></choose>
+		</where>
+	</select>
+	<sql id="pagingWhere">
+		<where>
+			<choose><when test="id_prikey!=null">and a.id_prikey = #{id_prikey}</when></choose>
+			<choose><when test="idNum!=null &amp;&amp; idNum!=''">and a.证件号码 like '%${idNum}%'</when></choose>
+			<choose><when test="loanAccountNum!=null &amp;&amp; loanAccountNum!=''">and a.贷款账号 like '%${loanAccountNum}%'</when></choose>
+			<choose><when test="importStatus!=null &amp;&amp; importStatus!=''">and a.导入状态 like '%${importStatus}%'</when></choose>
+			<choose><when test="remark!=null &amp;&amp; remark!=''">and a.备注 like '%${remark}%'</when></choose>
+			<choose><when test="createOn!=null">and a.创建时间 = #{createOn}</when></choose>
+			<choose><when test="createBy!=null &amp;&amp; createBy!=''">and a.创建者 like '%${createBy}%'</when></choose>
+			<choose><when test="createByName!=null &amp;&amp; createByName!=''">and b.描述 like '%${createByName}%'</when></choose>
+		</where>
+	</sql>
+	<!-- 分页获取总数 -->
+	<select id="findPagingCount" resultType="Integer">
+		select count(*) _row from
+		<include refid="tableName" /> a
+		left join hbcm.._USER b on a.创建者 = b.名称
+		<include refid="pagingWhere" />
+	</select>
+	<!-- 分页获取数据 -->
+	<select id="findPagingData" resultMap="resultMap">
+		select
+		<include refid="fieldAll" />,id_prikey,createByName
+		from (
+		select row_number() over (order by a.id_prikey asc) RN,
+		<include refid="fieldTrimAll2" />,a.id_prikey,RTRIM(b.描述) createByName
+		from
+		<include refid="tableName" /> a
+		left join hbcm.._USER b on a.创建者 = b.名称
+		<include refid="pagingWhere" />
+		) a where RN &gt; #{start} and RN &lt;= #{end}
+	</select>
+	
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hbsoft.csms.dao.DistributeStatisticsDao">
+	
+	<select id="getDistributeNumById" resultType="Integer">
+		select COUNT(id_prikey) from k_loan_distribute a
+  		where a.编号 = #{id} and a.编号类型 = #{type}
+	</select>
+	
+	<select id="getCustomerAll" resultType = "Integer">
+		select COUNT(id_prikey) from k_loan_info a
+	</select>
+	
+	
+	
+	
+</mapper>
